@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pembeli - BelanjaKita</title>
+    <meta name="description" content="Dashboard pembeli BelanjaKita - pantau pesanan dan aktivitas belanja Anda">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .banner-header { background: linear-gradient(-45deg, #00B14F, #00d2ff, #0D6EFD, #00B14F); background-size: 400% 400%; animation: gradientShift 8s ease infinite; color: white; padding: 32px 0; border-radius: 0 0 24px 24px; margin-bottom: 32px; position: relative; overflow: hidden; }
+        .banner-header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .gradient-card { color: white; padding: 24px; border-radius: 16px; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .gradient-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .gradient-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); border-radius: 50%; transition: all 0.5s ease; }
+        .gradient-card:hover::before { transform: scale(2); }
+        .bg-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .bg-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+        .bg-pink-purple { background: linear-gradient(135deg, #d946ef, #9333ea); }
+        .quick-action-card { display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .quick-action-card:hover { border-color: var(--primary-green); transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .qa-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; transition: var(--transition); }
+        .quick-action-card:hover .qa-icon { transform: scale(1.1) rotate(-5deg); }
+    </style>
+</head>
+<body style="background-color: #f8fafc;">
+    <nav class="navbar" style="background:rgba(255,255,255,0.85); border-bottom:none;">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center; height:70px;">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html" class="active"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="banner-header">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1;">
+            <div data-animate="fade-right">
+                <h1 style="font-size:2rem; margin-bottom:8px;">Dashboard Pembeli</h1>
+                <p style="opacity:0.9;">Selamat datang kembali, Dita Rahma Putri! 👋</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="padding-bottom: 60px;">
+        <!-- Stats Grid -->
+        <div class="grid-4" style="margin-bottom:32px;">
+            <div class="gradient-card bg-blue" data-animate="fade-up" data-delay="0">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                    <i data-lucide="box" width="28"></i>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:12px; font-size:0.8rem;">Total</span>
+                </div>
+                <div style="font-size:1.8rem; font-weight:700; margin-bottom:4px;" id="d-tot-pesanan">0</div>
+                <div style="font-size:0.9rem; opacity:0.9;">Total Pesanan</div>
+            </div>
+            <div class="gradient-card bg-orange" data-animate="fade-up" data-delay="80">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                    <i data-lucide="clock" width="28"></i>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:12px; font-size:0.8rem;">Aktif</span>
+                </div>
+                <div style="font-size:1.8rem; font-weight:700; margin-bottom:4px;" id="d-aktif">0</div>
+                <div style="font-size:0.9rem; opacity:0.9;">Pesanan Aktif</div>
+            </div>
+            <div class="gradient-card bg-green" data-animate="fade-up" data-delay="160">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                    <i data-lucide="check-circle" width="28"></i>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:12px; font-size:0.8rem;">Selesai</span>
+                </div>
+                <div style="font-size:1.8rem; font-weight:700; margin-bottom:4px;" id="d-selesai">0</div>
+                <div style="font-size:0.9rem; opacity:0.9;">Pesanan Selesai</div>
+            </div>
+            <div class="gradient-card bg-purple" data-animate="fade-up" data-delay="240">
+                <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+                    <i data-lucide="trending-up" width="28"></i>
+                    <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:12px; font-size:0.8rem;">Total</span>
+                </div>
+                <div style="font-size:1.8rem; font-weight:700; margin-bottom:4px;" id="d-belanja">Rp 0</div>
+                <div style="font-size:0.9rem; opacity:0.9;">Total Belanja</div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom:16px; font-size:1.1rem; color:var(--text-color);" data-animate="fade-up">Aksi Cepat</h3>
+        <div class="grid-4" style="margin-bottom:32px;">
+            <div class="quick-action-card" onclick="window.location.href='katalog.html'" data-animate="fade-up" data-delay="0">
+                <div class="qa-icon" style="background:var(--primary-green);"><i data-lucide="shopping-bag"></i></div>
+                <div><div style="font-weight:600; font-size:0.95rem;">Belanja Sekarang</div><div style="font-size:0.8rem; color:var(--text-muted);">Jelajahi produk UMKM</div></div>
+            </div>
+            <div class="quick-action-card" onclick="window.location.href='riwayat.html'" data-animate="fade-up" data-delay="80">
+                <div class="qa-icon" style="background:#3b82f6;"><i data-lucide="package"></i></div>
+                <div><div style="font-weight:600; font-size:0.95rem;">Lacak Pesanan</div><div style="font-size:0.8rem; color:var(--text-muted);">Cek status pengiriman</div></div>
+            </div>
+            <div class="quick-action-card" data-animate="fade-up" data-delay="160">
+                <div class="qa-icon" style="background:#ec4899;"><i data-lucide="heart"></i></div>
+                <div><div style="font-weight:600; font-size:0.95rem;">Wishlist Saya</div><div style="font-size:0.8rem; color:var(--text-muted);">Produk tersimpan</div></div>
+            </div>
+            <div class="quick-action-card" data-animate="fade-up" data-delay="240">
+                <div class="qa-icon" style="background:#a855f7;"><i data-lucide="gift"></i></div>
+                <div><div style="font-weight:600; font-size:0.95rem;">Promo & Voucher</div><div style="font-size:0.8rem; color:var(--text-muted);">Lihat penawaran menarik</div></div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:32px;">
+            <!-- Left Column -->
+            <div>
+                <div class="card" style="margin-bottom:24px;" data-animate="fade-up">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                        <h3 style="display:flex; align-items:center; gap:8px; margin:0;"><i data-lucide="package" color="var(--primary-green)"></i> Pesanan Terbaru</h3>
+                        <a href="riwayat.html" style="font-size:0.9rem; font-weight:600; display:flex; align-items:center; gap:4px; color:var(--text-muted);">Lihat Semua <i data-lucide="arrow-right" width="16"></i></a>
+                    </div>
+                    <div id="d-pesanan-list" style="display:flex; flex-direction:column; gap:16px;">
+                        <!-- JS Loaded -->
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;" data-animate="fade-up">
+                    <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.1rem;"><i data-lucide="star" color="#FFC107"></i> Rekomendasi Untuk Anda</h3>
+                </div>
+                <div class="grid-2" style="margin-bottom:24px;" id="d-rekomendasi">
+                    <!-- JS Loaded -->
+                </div>
+
+                <div class="gradient-card bg-pink-purple" style="display:flex; justify-content:space-between; align-items:center;" data-animate="fade-up">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px; font-weight:700; margin-bottom:8px;"><i data-lucide="tag" width="20"></i> Voucher Spesial</div>
+                        <p style="font-size:0.9rem; opacity:0.9;">Dapatkan diskon hingga 50%<br>untuk pembelian pertama Anda!</p>
+                    </div>
+                    <button class="btn" style="background:white; color:#9333ea; font-weight:700;">Klaim Sekarang</button>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <div class="card" style="margin-bottom:24px;" data-animate="fade-left">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                        <h3 style="display:flex; align-items:center; gap:8px; margin:0; font-size:1rem;"><i data-lucide="heart" color="#ec4899"></i> Wishlist</h3>
+                        <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted); cursor:pointer;">Lihat</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:16px;" id="d-wishlist">
+                        <!-- JS Loaded -->
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:24px;" data-animate="fade-left" data-delay="100">
+                    <h3 style="display:flex; align-items:center; gap:8px; margin-bottom:24px; font-size:1rem;"><i data-lucide="map-pin" color="#3b82f6"></i> Alamat Tersimpan</h3>
+                    <div style="border:1px solid var(--primary-green); background:#f0fdf4; padding:16px; border-radius:12px; margin-bottom:12px;">
+                        <span style="background:var(--primary-green); color:white; padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:600; margin-bottom:8px; display:inline-block;">Utama</span>
+                        <div style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">Rumah</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Jl. Merdeka No. 123, Jakarta Pusat, DKI Jakarta 10110</div>
+                    </div>
+                    <div style="border:1px solid var(--border-color); padding:16px; border-radius:12px; margin-bottom:16px;">
+                        <div style="font-size:0.9rem; font-weight:600; margin-bottom:4px;">Kantor</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Jl. Sudirman No. 456, Jakarta Selatan, DKI Jakarta 12190</div>
+                    </div>
+                    <button class="btn btn-outline btn-block" style="font-size:0.85rem;"><i data-lucide="map-pin" width="16"></i> Tambah Alamat</button>
+                </div>
+
+                <div class="card" data-animate="fade-left" data-delay="200">
+                    <h3 style="display:flex; align-items:center; gap:8px; margin-bottom:24px; font-size:1rem;"><i data-lucide="credit-card" color="#8b5cf6"></i> Metode Pembayaran</h3>
+                    <div style="border:1px solid var(--border-color); padding:16px; border-radius:12px; margin-bottom:12px; display:flex; gap:12px; align-items:center;">
+                        <div style="width:40px; height:24px; background:#3b82f6; border-radius:4px; display:flex; justify-content:center; align-items:center;"><i data-lucide="credit-card" width="14" color="white"></i></div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:600;">BCA Virtual Account</div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">**** 1234</div>
+                        </div>
+                    </div>
+                    <div style="border:1px solid var(--border-color); padding:16px; border-radius:12px; margin-bottom:16px; display:flex; gap:12px; align-items:center;">
+                        <div style="width:40px; height:24px; background:#10b981; border-radius:4px; display:flex; justify-content:center; align-items:center;"><i data-lucide="smartphone" width="14" color="white"></i></div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:600;">GoPay</div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);">0812****5678</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-block" style="font-size:0.85rem;"><i data-lucide="credit-card" width="16"></i> Tambah Metode</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+
+            // Animated counters
+            animateCounter(document.getElementById('d-tot-pesanan'), orders.length);
+            animateCounter(document.getElementById('d-aktif'), orders.filter(o => o.status !== 'Selesai' && o.status !== 'Terkirim').length);
+            animateCounter(document.getElementById('d-selesai'), orders.filter(o => o.status === 'Selesai' || o.status === 'Terkirim').length);
+            const totalBelanja = orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('d-belanja').innerText = formatRupiah(totalBelanja);
+
+            // Load Latest Orders
+            const pList = document.getElementById('d-pesanan-list');
+            if(orders.length === 0) {
+                pList.innerHTML = '<p class="text-muted" style="text-align:center; padding:24px;">Belum ada pesanan.</p>';
+            } else {
+                pList.innerHTML = orders.slice(0, 2).map(o => `
+                    <div style="border:1px solid var(--border-color); border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:center; transition: all 0.3s;" onmouseover="this.style.boxShadow='var(--shadow-md)';this.style.transform='translateX(4px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+                        <div style="display:flex; gap:16px; align-items:center;">
+                            <div style="width:48px; height:48px; background:#f1f5f9; border-radius:12px; display:flex; justify-content:center; align-items:center;"><i data-lucide="box" color="#64748b"></i></div>
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem; margin-bottom:4px;">${o.id}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">${new Date(o.date).toLocaleString('id-ID')}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="background:${o.status==='Terkirim'?'#dcfce7':'#f3e8ff'}; color:${o.status==='Terkirim'?'var(--primary-green)':'#a855f7'}; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:600; display:inline-block; margin-bottom:8px;">${o.status}</div>
+                            <div style="font-weight:700; color:var(--primary-green);">${formatRupiah(o.total)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Load Rekomendasi
+            const prods = getProducts();
+            document.getElementById('d-rekomendasi').innerHTML = prods.slice(4, 6).map((p, i) => `
+                <div class="product-card stagger-item" style="box-shadow:none; border:1px solid var(--border-color); cursor:pointer; animation-delay:${i*0.1}s;" onclick="window.location.href='detail-produk.html?id=${p.id}'">
+                    <div style="overflow:hidden;"><img src="${p.image}" class="product-img"></div>
+                    <div class="product-info" style="padding:16px;">
+                        <h3 class="product-title" style="font-size:0.95rem; margin-bottom:4px;">${p.name}</h3>
+                        <div style="display:flex; align-items:center; gap:4px; font-size:0.75rem; color:#FFC107; font-weight:600; margin-bottom:8px;"><i data-lucide="star" fill="#FFC107" width="12"></i> ${p.rating}</div>
+                        <div style="color:var(--primary-green); font-weight:700;">${formatRupiah(p.price)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Load Wishlist
+            document.getElementById('d-wishlist').innerHTML = prods.slice(0, 4).map(p => `
+                <div style="display:flex; gap:12px; align-items:center; cursor:pointer; transition: all 0.3s; padding:4px; border-radius:8px;" onclick="window.location.href='detail-produk.html?id=${p.id}'" onmouseover="this.style.background='#f8fafc';this.style.transform='translateX(4px)'" onmouseout="this.style.background='';this.style.transform=''">
+                    <img src="${p.image}" style="width:48px; height:48px; object-fit:cover; border-radius:8px;">
+                    <div>
+                        <div style="font-size:0.85rem; font-weight:600; margin-bottom:2px;">${p.name}</div>
+                        <div style="font-size:0.8rem; color:var(--primary-green); font-weight:600;">${formatRupiah(p.price)}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

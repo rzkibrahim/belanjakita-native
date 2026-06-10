@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BelanjaKita - E-Commerce UMKM Indonesia</title>
+    <meta name="description" content="Platform e-commerce yang menghubungkan Anda dengan produk lokal terbaik dari UMKM Indonesia.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="customer/dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="customer/katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="customer/artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="customer/riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="customer/keranjang.html" class="icon-btn">
+                    <i data-lucide="shopping-cart" width="20"></i>
+                    <span class="badge cart-badge-count">0</span>
+                </a>
+                <a href="auth/login.html" class="icon-btn">
+                    <i data-lucide="user" width="20"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-gradient" data-parallax="0.3" style="position:relative;">
+        <div class="container" style="position: relative; z-index: 1;">
+            <h1 id="hero-title" style="font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; max-width: 600px;" data-animate="fade-right"></h1>
+            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; max-width: 600px;" data-animate="fade-right" data-delay="200">Platform e-commerce yang menghubungkan Anda dengan produk lokal terbaik dari seluruh Indonesia. Dukung UMKM, tingkatkan ekonomi lokal!</p>
+            <div style="display: flex; gap: 16px;" data-animate="fade-up" data-delay="400">
+                <a href="customer/katalog.html" class="btn btn-white">Jelajahi Produk</a>
+                <a href="customer/artikel.html" class="btn btn-outline" style="border-color:white; color:white; background:transparent;">Baca Artikel</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section style="margin-top: -60px; margin-bottom: 60px;">
+        <div class="container">
+            <div class="grid-4">
+                <div class="card" style="text-align: center;" data-animate="fade-up" data-delay="0">
+                    <i data-lucide="package-check" width="40" height="40" color="var(--primary-green)" style="margin-bottom:16px;" class="floating"></i>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Produk Berkualitas</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Produk pilihan dari UMKM terpercaya</p>
+                </div>
+                <div class="card" style="text-align: center;" data-animate="fade-up" data-delay="100">
+                    <i data-lucide="shield-check" width="40" height="40" color="var(--primary-blue)" style="margin-bottom:16px;" class="floating floating-delay-1"></i>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Transaksi Aman</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Pembayaran dijamin aman dan terpercaya</p>
+                </div>
+                <div class="card" style="text-align: center;" data-animate="fade-up" data-delay="200">
+                    <i data-lucide="trending-up" width="40" height="40" color="#8b5cf6" style="margin-bottom:16px;" class="floating floating-delay-2"></i>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Harga Terbaik</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Langsung dari produsen tanpa perantara</p>
+                </div>
+                <div class="card" style="text-align: center;" data-animate="fade-up" data-delay="300">
+                    <i data-lucide="star" width="40" height="40" color="#FFC107" style="margin-bottom:16px;" class="floating floating-delay-3"></i>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Rating Terpercaya</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Ulasan asli dari pembeli nyata</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Products -->
+    <section style="padding: 60px 0;">
+        <div class="container">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;" data-animate="fade-up">
+                <div>
+                    <h2 style="font-size:1.5rem; margin-bottom:4px;">Produk <span class="gradient-text">Unggulan</span></h2>
+                    <p style="color:var(--text-muted);">Pilihan terbaik dari berbagai kategori</p>
+                </div>
+                <a href="customer/katalog.html" style="color:var(--primary-green); font-weight:600; display:flex; align-items:center; border:1px solid var(--border-color); padding:8px 16px; border-radius:6px; background:white;">Lihat Semua</a>
+            </div>
+            <div class="grid-4" id="home-products">
+                <!-- Products will be loaded via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-gradient">
+        <div class="container">
+            <h2 style="font-size: 2rem; margin-bottom: 12px;" data-animate="fade-up">Siap Mulai Belanja?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 32px;" data-animate="fade-up" data-delay="100">Temukan ribuan produk lokal berkualitas dan dukung pertumbuhan UMKM Indonesia</p>
+            <a href="customer/katalog.html" class="btn btn-white" data-animate="zoom-in" data-delay="200">Mulai Belanja Sekarang</a>
+        </div>
+    </section>
+
+    <script src="js/store.js"></script>
+    <script src="js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Typing effect for hero
+            const heroTitle = document.getElementById('hero-title');
+            if (heroTitle) {
+                typeText(heroTitle, 'Belanja Produk UMKM Indonesia dengan Mudah', 45);
+            }
+
+            // Load products with stagger
+            const products = getProducts().slice(0, 4);
+            const container = document.getElementById('home-products');
+            container.innerHTML = products.map((p, i) => `
+                <a href="customer/detail-produk.html?id=${p.id}" class="product-card" data-animate="fade-up" data-delay="${i * 100}">
+                    <div style="overflow:hidden;">
+                        <img src="${p.image}" class="product-img" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">${p.category}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span style="color:var(--primary-green); font-weight:700;">${formatRupiah(p.price)}</span>
+                            <span style="display:flex; align-items:center; gap:4px; font-size:0.85rem; font-weight:600;"><i data-lucide="star" fill="#FFC107" color="#FFC107" width="14"></i> ${p.rating}</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">Terjual ${p.sold}</div>
+                    </div>
+                </a>
+            `).join('');
+
+            // Re-init scroll reveal for dynamically added elements
+            const newEls = container.querySelectorAll('[data-animate]');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const delay = parseInt(e.target.getAttribute('data-delay')) || 0;
+                        setTimeout(() => e.target.classList.add('animated'), delay);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            newEls.forEach(el => obs.observe(el));
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

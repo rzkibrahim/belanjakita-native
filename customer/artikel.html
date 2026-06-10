@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artikel & Tips - BelanjaKita</title>
+    <meta name="description" content="Baca artikel edukatif seputar UMKM dan e-commerce di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html" class="active"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+        <div class="page-header" style="padding: 0 0 24px 0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Artikel & <span class="gradient-text">Tips</span></h1>
+                <p>Baca artikel edukatif seputar UMKM dan e-commerce</p>
+            </div>
+        </div>
+
+        <div class="form-control" style="max-width:400px; display:flex; align-items:center; gap:8px; margin-bottom:32px;" data-animate="fade-up" data-delay="100">
+            <i data-lucide="search" width="18" color="var(--text-muted)"></i>
+            <input type="text" placeholder="Cari artikel..." style="border:none; outline:none; background:transparent; width:100%;">
+        </div>
+
+        <div class="grid-3">
+            <a href="detail-artikel.html" class="article-card" data-animate="fade-up" data-delay="0">
+                <div style="overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=250" alt="Bisnis" class="article-img">
+                </div>
+                <div class="article-info">
+                    <div class="article-pill">Bisnis</div>
+                    <h3 class="article-title">Strategi Meningkatkan Penjualan UMKM di Era Digital</h3>
+                    <p class="article-desc">Pelajari cara efektif memasarkan produk UMKM Anda melalui platform digital.</p>
+                    <div class="article-meta">
+                        <span>Tim BelanjaKita</span>
+                        <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="eye" width="14"></i> 1234</span>
+                    </div>
+                    <div class="article-date">25 Oktober 2025</div>
+                </div>
+            </a>
+            <a href="detail-artikel.html" class="article-card" data-animate="fade-up" data-delay="100">
+                <div style="overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=400&h=250" alt="Tips" class="article-img">
+                </div>
+                <div class="article-info">
+                    <div class="article-pill">Tips</div>
+                    <h3 class="article-title">Tips Berbelanja Online yang Aman dan Nyaman</h3>
+                    <p class="article-desc">Panduan lengkap berbelanja online dengan aman dan menghindari penipuan.</p>
+                    <div class="article-meta">
+                        <span>Dita Rahma</span>
+                        <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="eye" width="14"></i> 892</span>
+                    </div>
+                    <div class="article-date">28 Oktober 2025</div>
+                </div>
+            </a>
+            <a href="detail-artikel.html" class="article-card" data-animate="fade-up" data-delay="200">
+                <div style="overflow:hidden;">
+                    <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=400&h=250" alt="Lokal" class="article-img">
+                </div>
+                <div class="article-info">
+                    <div class="article-pill">Produk Lokal</div>
+                    <h3 class="article-title">Mengenal Produk Lokal Indonesia yang Mendunia</h3>
+                    <p class="article-desc">Berbagai produk lokal Indonesia yang telah dikenal dan diminati pasar internasional.</p>
+                    <div class="article-meta">
+                        <span>Arif Nugroho</span>
+                        <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="eye" width="14"></i> 2156</span>
+                    </div>
+                    <div class="article-date">2 November 2025</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+</body>
+</html>

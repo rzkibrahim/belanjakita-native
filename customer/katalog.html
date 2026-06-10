@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog - BelanjaKita</title>
+    <meta name="description" content="Jelajahi katalog produk UMKM Indonesia di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html" class="active"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Katalog <span class="gradient-text">Produk</span></h1>
+                <p>Temukan produk lokal terbaik dari berbagai kategori</p>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:16px; margin-bottom:32px;" data-animate="fade-up" data-delay="100">
+            <div class="form-control" style="flex:1; display:flex; align-items:center; gap:8px; background:white;">
+                <i data-lucide="search" width="18" color="var(--text-muted)"></i>
+                <input type="text" id="filter-search" placeholder="Cari produk..." style="border:none; outline:none; background:transparent; width:100%;" onkeyup="filterProducts()">
+            </div>
+            <select class="form-control" id="filter-cat" style="width:250px; background:white;" onchange="filterProducts()">
+                <option value="All">Semua Kategori</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Fashion">Fashion</option>
+            </select>
+            <select class="form-control" id="filter-sort" style="width:250px; background:white;" onchange="filterProducts()">
+                <option value="Populer">Terpopuler</option>
+                <option value="Terbaru">Terbaru</option>
+                <option value="HargaRendah">Harga Terendah</option>
+                <option value="HargaTinggi">Harga Tertinggi</option>
+            </select>
+        </div>
+
+        <div class="grid-4" id="katalog-products"></div>
+    </div>
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        function filterProducts() {
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            const cat = document.getElementById('filter-cat').value;
+            const sort = document.getElementById('filter-sort').value;
+
+            let products = getProducts();
+
+            if(search) products = products.filter(p => p.name.toLowerCase().includes(search));
+            if(cat !== 'All') products = products.filter(p => p.category === cat);
+
+            if(sort === 'HargaRendah') products.sort((a,b) => a.price - b.price);
+            else if(sort === 'HargaTinggi') products.sort((a,b) => b.price - a.price);
+            else products.sort((a,b) => b.sold - a.sold);
+
+            renderProducts(products);
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('katalog-products');
+            if(products.length === 0) {
+                container.innerHTML = '<p class="text-muted" style="grid-column: span 4; text-align:center;">Produk tidak ditemukan.</p>';
+                return;
+            }
+            container.innerHTML = products.map((p, i) => `
+                <div class="product-card stagger-item" style="animation-delay: ${i * 0.08}s;">
+                    <div style="overflow:hidden;">
+                        <img src="${p.image}" class="product-img" onclick="window.location.href='detail-produk.html?id=${p.id}'" style="cursor:pointer;">
+                    </div>
+                    <div class="product-info">
+                        <div style="color:var(--primary-green); font-size:0.8rem; font-weight:600; margin-bottom:4px;">${p.category}</div>
+                        <h3 class="product-title" onclick="window.location.href='detail-produk.html?id=${p.id}'" style="cursor:pointer;">${p.name}</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">Produk lokal berkualitas dari UMKM.</p>
+                        <div style="color:var(--primary-green); font-weight:700; font-size:1.1rem; margin-bottom:12px;">${formatRupiah(p.price)}</div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">
+                            <span>Terjual: ${p.sold}</span>
+                            <span style="display:flex; align-items:center; gap:4px; font-weight:600; color:#FFC107;"><i data-lucide="star" fill="#FFC107" width="12"></i> ${p.rating}</span>
+                        </div>
+                        <button class="btn btn-outline btn-block" onclick='addToCart(${JSON.stringify(p)})'>+ Keranjang</button>
+                    </div>
+                </div>
+            `).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => filterProducts());
+    </script>
+</body>
+</html>

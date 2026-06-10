@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BelanjaKita</title>
+    <meta name="description" content="Masuk ke akun BelanjaKita Anda">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-wrapper auth-bg-animated">
+        <!-- Floating shapes -->
+        <div class="auth-shape auth-shape-1"></div>
+        <div class="auth-shape auth-shape-2"></div>
+        <div class="auth-shape auth-shape-3"></div>
+
+        <!-- Particle canvas -->
+        <canvas id="particle-canvas"></canvas>
+
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 style="color:var(--primary-green); font-size:1.8rem;">BelanjaKita</h1>
+                <p style="color:var(--text-muted); font-size:0.95rem; margin-top:8px;">Platform E-Commerce UMKM Indonesia</p>
+            </div>
+
+            <form action="../customer/dashboard-pembeli.html">
+                <div class="form-group" data-animate="fade-up" data-delay="100">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="nama@email.com" required>
+                </div>
+                <div class="form-group" data-animate="fade-up" data-delay="200">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="********" required>
+                </div>
+                <button type="submit" class="btn" style="width:100%; background:#111; color:white; padding:12px;" data-animate="fade-up" data-delay="300">
+                    Masuk
+                </button>
+            </form>
+
+            <div style="text-align:center; margin-top:24px; padding-top:24px; border-top:1px solid var(--border-color); font-size:0.85rem;" data-animate="fade-up" data-delay="400">
+                <a href="../customer/dashboard-pembeli.html" style="color:var(--text-muted); transition: color 0.3s;" onmouseover="this.style.color='var(--primary-green)'" onmouseout="this.style.color='var(--text-muted)'">Login Pembeli</a> |
+                <br>
+                <a href="../seller/dashboard-seller.html" style="color:var(--text-muted); transition: color 0.3s;" onmouseover="this.style.color='var(--primary-green)'" onmouseout="this.style.color='var(--text-muted)'">Login Penjual</a> |
+                <a href="../admin/dashboard-admin.html" style="color:#8b5cf6; font-weight:600;">Login Admin</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles('particle-canvas');
+        });
+    </script>
+</body>
+</html>

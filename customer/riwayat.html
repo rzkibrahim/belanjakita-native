@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Transaksi - BelanjaKita</title>
+    <meta name="description" content="Riwayat transaksi pembelian Anda di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html" class="active"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding: 0 0 24px 0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Riwayat <span class="gradient-text">Transaksi</span></h1>
+                <p>Lihat semua riwayat pesanan dan transaksi Anda</p>
+            </div>
+        </div>
+        <div id="riwayat-container" style="display:flex; flex-direction:column; gap:24px;"></div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            const container = document.getElementById('riwayat-container');
+            if(orders.length === 0) {
+                container.innerHTML = '<p class="text-muted" style="text-align:center; padding:24px;">Belum ada riwayat transaksi.</p>';
+                return;
+            }
+            container.innerHTML = orders.map((o, idx) => `
+                <div class="stagger-item" style="border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; animation-delay:${idx * 0.1}s; transition: all 0.3s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow=''">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:16px;">
+                        <div>
+                            <div style="font-weight:700; display:flex; align-items:center; gap:8px;"><i data-lucide="box" width="18" color="var(--primary-green)"></i> ${o.id}</div>
+                            <div style="font-size:0.85rem; color:var(--text-muted);">${new Date(o.date).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</div>
+                        </div>
+                        <span style="background:#E8F5E9; color:var(--primary-green); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; height:fit-content;">${o.status}</span>
+                    </div>
+
+                    ${o.items.map(i => `
+                        <div style="display:flex; gap:16px; margin-bottom:16px; transition: all 0.3s; padding:4px; border-radius:8px;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+                            <img src="${i.image}" alt="${i.name}" style="width:80px; height:80px; object-fit:cover; border-radius:var(--radius-md);">
+                            <div style="flex:1;">
+                                <h3 style="font-size:1rem; margin-bottom:4px;">${i.name}</h3>
+                                <div style="font-size:0.85rem; color:var(--text-muted);">${i.qty} x ${formatRupiah(i.price)}</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted);"><i data-lucide="store" width="12"></i> ${i.seller || 'UMKM Lokal'}</div>
+                            </div>
+                            <div style="font-weight:600;">${formatRupiah(i.price * i.qty)}</div>
+                        </div>
+                    `).join('')}
+
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid var(--border-color); padding-top:16px;">
+                        <div style="font-size:0.85rem; color:var(--text-muted);">
+                            <div>Metode Pembayaran: Daring (Otomatis)</div>
+                            <div>Alamat: Sesuai Profil</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:0.85rem; color:var(--text-muted);">Total Pembayaran</div>
+                            <div style="font-weight:700; color:var(--primary-green); font-size:1.1rem;">${formatRupiah(o.total)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

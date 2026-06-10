@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi - Penjual BelanjaKita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-seller.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita <span style="color:var(--text-muted); font-weight:400;">| Seller</span></a>
+            <ul class="nav-links">
+                <li><a href="dashboard-seller.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-produk.html"><i data-lucide="package" width="18"></i> Kelola Produk</a></li>
+                <li><a href="transaksi.html" class="active"><i data-lucide="file-text" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Kelola <span class="gradient-text">Transaksi</span></h1>
+                <p>Pantau pesanan yang masuk dan perbarui status pengiriman</p>
+            </div>
+            <select class="form-control" style="width:200px; background:white;">
+                <option>Semua Status</option>
+                <option>Menunggu diproses</option>
+                <option>Diproses</option>
+                <option>Terkirim</option>
+            </select>
+        </div>
+
+        <div class="card" data-animate="fade-up" data-delay="100">
+            <div class="table-responsive">
+                <table class="table" id="seller-transactions-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pesanan</th>
+                            <th>Tanggal</th>
+                            <th>Items</th>
+                            <th>Total Pembayaran</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            
+            const tbody = document.querySelector('#seller-transactions-table tbody');
+            if(orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-center">Belum ada pesanan masuk</td></tr>';
+            } else {
+                tbody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${new Date(o.date).toLocaleDateString('id-ID')}</td>
+                        <td>${o.items.length} produk</td>
+                        <td>${formatRupiah(o.total)}</td>
+                        <td><span style="background:#E8F5E9; color:var(--primary-green); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${o.status}</span></td>
+                        <td>
+                            <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;" onchange="updateStatus('${o.id}', this.value)">
+                                <option ${o.status === 'Dibayar' ? 'selected' : ''}>Dibayar</option>
+                                <option ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                <option ${o.status === 'Terkirim' ? 'selected' : ''}>Terkirim</option>
+                            </select>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            lucide.createIcons();
+        });
+
+        function updateStatus(id, newStatus) {
+            let orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            let order = orders.find(o => o.id === id);
+            if(order) {
+                order.status = newStatus;
+                localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+                if (typeof showToast === 'function') showToast('Status pesanan berhasil diperbarui', 'success', 'Diperbarui');
+            }
+        }
+    </script>
+</body>
+</html>

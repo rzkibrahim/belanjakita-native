@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - BelanjaKita</title>
+    <meta name="description" content="Checkout pembayaran di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <a href="keranjang.html" style="display:inline-flex; align-items:center; gap:8px; color:var(--text-muted); margin-bottom: 24px;" data-animate="fade-right">
+            <i data-lucide="arrow-left" width="18"></i> Kembali ke Keranjang
+        </a>
+
+        <!-- Progress Stepper -->
+        <div class="stepper" data-animate="fade-up">
+            <div class="stepper-step done">
+                <div class="stepper-circle">✓</div>
+                <div class="stepper-label">Keranjang</div>
+            </div>
+            <div class="stepper-line active"></div>
+            <div class="stepper-step active">
+                <div class="stepper-circle">2</div>
+                <div class="stepper-label">Pembayaran</div>
+            </div>
+            <div class="stepper-line"></div>
+            <div class="stepper-step">
+                <div class="stepper-circle">3</div>
+                <div class="stepper-label">Selesai</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+            <div>
+                <div class="card" style="margin-bottom: 24px;" data-animate="fade-up" data-delay="100">
+                    <h2 style="font-size:1.2rem; margin-bottom:20px;">Alamat Pengiriman</h2>
+                    <div class="form-group">
+                        <label class="form-label">Alamat Lengkap *</label>
+                        <textarea class="form-control" placeholder="Jl. Contoh No. 123, Kota..."></textarea>
+                    </div>
+                </div>
+
+                <div class="card" data-animate="fade-up" data-delay="200">
+                    <h2 style="font-size:1.2rem; margin-bottom:20px;">Metode Pembayaran</h2>
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <label style="border:1px solid var(--primary-green); border-radius:var(--radius-md); padding:16px; display:flex; align-items:center; gap:16px; cursor:pointer; background:#F0FDF4; transition: all 0.3s;">
+                            <input type="radio" name="payment" value="QRIS" checked style="width:18px; height:18px; accent-color:var(--primary-green);">
+                            <div>
+                                <div style="font-weight:600; display:flex; align-items:center; gap:8px;"><i data-lucide="wallet" width="18" color="var(--primary-green)"></i> QRIS</div>
+                            </div>
+                        </label>
+                        <label style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; display:flex; align-items:center; gap:16px; cursor:pointer; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--primary-blue)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                            <input type="radio" name="payment" value="Transfer" style="width:18px; height:18px; accent-color:var(--primary-green);">
+                            <div>
+                                <div style="font-weight:600; display:flex; align-items:center; gap:8px;"><i data-lucide="building" width="18" color="#8b5cf6"></i> Transfer Bank</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="summary-card" data-animate="fade-left" data-delay="150">
+                    <h3 style="margin-bottom:20px; font-size:1.1rem;">Ringkasan Pesanan</h3>
+                    <div id="checkout-items" style="border-bottom:1px solid var(--border-color); padding-bottom:16px; margin-bottom:16px;"></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px; color:var(--text-muted);">
+                        <span>Subtotal</span><span id="checkout-subtotal">Rp 0</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:20px; color:var(--text-muted);">
+                        <span>Ongkos Kirim</span><span id="checkout-shipping">Rp 0</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:24px; font-weight:700; font-size:1.2rem; border-top:1px solid var(--border-color); padding-top:16px;">
+                        <span>Total Pembayaran</span><span id="checkout-total" style="color:var(--primary-green);">Rp 0</span>
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="processPayment()">Bayar Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content" style="text-align:center;">
+            <div style="width:80px; height:80px; background:#d1fae5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:2rem; color:var(--primary-green);">✓</div>
+            <h2 style="margin-bottom:8px;">Pembayaran Berhasil!</h2>
+            <p style="color:var(--text-muted); margin-bottom:24px;">Pesanan Anda sedang diproses oleh penjual.</p>
+            <a href="dashboard-pembeli.html" class="btn btn-primary">Lihat Pesanan Saya</a>
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = getCart();
+            if(cart.length === 0) window.location.href = 'keranjang.html';
+
+            const container = document.getElementById('checkout-items');
+            container.innerHTML = cart.map(item => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
+                    <span style="color:var(--text-muted);">${item.name} x ${item.qty}</span>
+                    <span>${formatRupiah(item.price * item.qty)}</span>
+                </div>
+            `).join('');
+
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let shipping = 15000;
+            document.getElementById('checkout-subtotal').innerText = formatRupiah(subtotal);
+            document.getElementById('checkout-shipping').innerText = formatRupiah(shipping);
+            document.getElementById('checkout-total').innerText = formatRupiah(subtotal + shipping);
+
+            lucide.createIcons();
+        });
+
+        function processPayment() {
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            orders.push({
+                id: 'TRX' + Date.now(),
+                items: getCart(),
+                date: new Date().toISOString(),
+                status: 'Dibayar',
+                total: getCart().reduce((s,i)=>s+(i.price*i.qty),0) + 15000
+            });
+            localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+            clearCart();
+
+            // Show confetti!
+            if (typeof showConfetti === 'function') showConfetti();
+
+            document.getElementById('paymentModal').classList.add('active');
+        }
+    </script>
+</body>
+</html>

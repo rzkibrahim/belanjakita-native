@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Pengguna - Admin BelanjaKita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-admin.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="dashboard-admin.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="kelola-produk.html"><i data-lucide="package" width="18"></i> Produk</a></li>
+                <li><a href="kelola-pengguna.html" class="active"><i data-lucide="users" width="18"></i> Pengguna</a></li>
+                <li><a href="kelola-transaksi.html"><i data-lucide="file-spreadsheet" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <span style="display:flex; align-items:center; gap:8px; color:var(--text-muted);"><i data-lucide="shield-check" color="#8b5cf6" width="18"></i> Admin</span>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Kelola <span class="gradient-text">Pengguna</span></h1>
+                <p>Pantau dan kelola semua pengguna platform</p>
+            </div>
+            <button class="btn" style="background:#111; color:white;" onclick="openTambahModal()"><i data-lucide="user-plus" width="18"></i> Tambah Pengguna</button>
+        </div>
+
+        <div style="display:flex; gap:16px; margin-bottom:24px;">
+            <div class="form-control" style="flex:1; display:flex; align-items:center; gap:8px; background:white;">
+                <i data-lucide="search" width="18" color="var(--text-muted)"></i>
+                <input type="text" id="admin-search-user" placeholder="Cari pengguna..." style="border:none; outline:none; background:transparent; width:100%;" onkeyup="renderUsers()">
+            </div>
+            <select class="form-control" id="admin-role-user" style="width:200px; background:white;" onchange="renderUsers()">
+                <option value="All">Semua Role</option>
+                <option value="Pembeli">Pembeli</option>
+                <option value="Penjual">Penjual</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+
+        <div class="grid-4" style="margin-bottom:32px;">
+            <div class="stat-card" style="box-shadow:none;">
+                <div class="stat-card-title">Total Pengguna</div>
+                <div class="stat-card-value" style="color:#8b5cf6; font-size:1.5rem; display:flex; align-items:center; gap:8px;"><i data-lucide="shield-check" width="24"></i> <span id="u-tot">0</span></div>
+            </div>
+            <div class="stat-card" style="box-shadow:none;">
+                <div class="stat-card-title">Pembeli</div>
+                <div class="stat-card-value" style="color:var(--primary-green); font-size:1.5rem; display:flex; align-items:center; gap:8px;"><i data-lucide="user" width="24"></i> <span id="u-buy">0</span></div>
+            </div>
+            <div class="stat-card" style="box-shadow:none;">
+                <div class="stat-card-title">Penjual</div>
+                <div class="stat-card-value" style="color:var(--primary-blue); font-size:1.5rem; display:flex; align-items:center; gap:8px;"><i data-lucide="store" width="24"></i> <span id="u-sel">0</span></div>
+            </div>
+            <div class="stat-card" style="box-shadow:none;">
+                <div class="stat-card-title">Nonaktif</div>
+                <div class="stat-card-value" style="color:var(--danger); font-size:1.5rem; display:flex; align-items:center; gap:8px;"><i data-lucide="user-x" width="24"></i> <span id="u-ina">0</span></div>
+            </div>
+        </div>
+
+        <div class="card" data-animate="fade-up" data-delay="100">
+            <div class="table-responsive">
+                <table class="table" id="admin-users-table">
+                    <thead>
+                        <tr>
+                            <th>Pengguna</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Bergabung</th>
+                            <th>Transaksi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Pengguna -->
+    <div class="modal" id="modalTambah">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem;">Tambah Pengguna Baru</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Daftarkan pengguna baru ke platform</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('modalTambah')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-tambah" onsubmit="handleTambahUser(event)">
+                <div class="form-group">
+                    <label class="form-label">Foto Profil</label>
+                    <div class="file-upload-area" style="min-height:100px;">
+                        <input type="file" id="t-avatar" accept="image/*">
+                        <div class="upload-icon"><i data-lucide="user-plus" width="24"></i></div>
+                        <div class="upload-text">Upload foto profil</div>
+                        <div class="upload-hint">Opsional — JPG, PNG (maks. 2MB)</div>
+                    </div>
+                    <div class="file-upload-preview" id="t-avatar-preview" style="margin-top:12px; display:none; height:100px; width:100px; border-radius:50%; margin-left:auto; margin-right:auto;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input type="text" id="t-nama" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="t-email" class="form-control" required>
+                </div>
+                <div style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Role *</label>
+                        <select id="t-role" class="form-control">
+                            <option value="Pembeli">Pembeli</option>
+                            <option value="Penjual">Penjual</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Status</label>
+                        <select id="t-status" class="form-control">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button type="submit" class="btn" style="flex:1; background:#111; color:white;">Simpan Pengguna</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalTambah')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Pengguna -->
+    <div class="modal" id="modalEdit">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem;">Edit Pengguna</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Perbarui data pengguna</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('modalEdit')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-edit" onsubmit="handleEditUser(event)">
+                <input type="hidden" id="e-id">
+                <div class="form-group">
+                    <label class="form-label">Foto Profil</label>
+                    <div class="file-upload-area" style="min-height:100px;">
+                        <input type="file" id="e-avatar" accept="image/*">
+                        <div class="upload-icon"><i data-lucide="user" width="24"></i></div>
+                        <div class="upload-text">Ganti foto profil</div>
+                        <div class="upload-hint">Kosongkan jika tidak ingin mengubah</div>
+                    </div>
+                    <div class="file-upload-preview" id="e-avatar-preview" style="margin-top:12px; height:100px; width:100px; border-radius:50%; margin-left:auto; margin-right:auto; overflow:hidden;"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input type="text" id="e-nama" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="e-email" class="form-control" required>
+                </div>
+                <div style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Role *</label>
+                        <select id="e-role" class="form-control">
+                            <option value="Pembeli">Pembeli</option>
+                            <option value="Penjual">Penjual</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Status</label>
+                        <select id="e-status" class="form-control">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button type="submit" class="btn" style="flex:1; background:#111; color:white;">Perbarui Pengguna</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalEdit')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail Pengguna -->
+    <div class="modal" id="modalDetail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="font-size:1.25rem;">Detail Pengguna</h2>
+                <button class="modal-close" onclick="closeModal('modalDetail')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="detail-body"></div>
+        </div>
+    </div>
+    
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); lucide.createIcons(); }
+
+        function openTambahModal() {
+            document.getElementById('form-tambah').reset();
+            document.getElementById('t-avatar-preview').style.display = 'none';
+            document.getElementById('t-avatar-preview').innerHTML = '';
+            openModal('modalTambah');
+        }
+
+        // Avatar upload
+        document.getElementById('t-avatar').addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.size > 2 * 1024 * 1024) { showToast('Ukuran file maksimal 2MB', 'warning'); this.value = ''; return; }
+                const base64 = await fileToBase64(file);
+                const preview = document.getElementById('t-avatar-preview');
+                preview.style.display = 'block';
+                preview.innerHTML = `<img src="${base64}" alt="Avatar" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                preview.dataset.imageData = base64;
+            }
+        });
+        document.getElementById('e-avatar').addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.size > 2 * 1024 * 1024) { showToast('Ukuran file maksimal 2MB', 'warning'); this.value = ''; return; }
+                const base64 = await fileToBase64(file);
+                const preview = document.getElementById('e-avatar-preview');
+                preview.innerHTML = `<img src="${base64}" alt="Avatar" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                preview.dataset.imageData = base64;
+            }
+        });
+
+        // Tambah
+        function handleTambahUser(e) {
+            e.preventDefault();
+            const preview = document.getElementById('t-avatar-preview');
+            const user = {
+                name: document.getElementById('t-nama').value,
+                email: document.getElementById('t-email').value,
+                role: document.getElementById('t-role').value,
+                status: document.getElementById('t-status').value,
+                avatar: preview.dataset.imageData || ''
+            };
+            addUser(user);
+            closeModal('modalTambah');
+            showToast('Pengguna berhasil ditambahkan!', 'success', 'Berhasil');
+            renderUsers();
+        }
+
+        // Edit
+        function openEditModal(id) {
+            const u = getUserById(id);
+            if (!u) return;
+            document.getElementById('e-id').value = u.id;
+            document.getElementById('e-nama').value = u.name;
+            document.getElementById('e-email').value = u.email;
+            document.getElementById('e-role').value = u.role;
+            document.getElementById('e-status').value = u.status;
+            const preview = document.getElementById('e-avatar-preview');
+            if (u.avatar) {
+                preview.innerHTML = `<img src="${u.avatar}" alt="Avatar" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+            } else {
+                preview.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #E8F5E9, #dbeafe); border-radius:50%; font-weight:700; font-size:2rem; color:var(--primary-green);">${u.name.charAt(0)}</div>`;
+            }
+            preview.dataset.imageData = '';
+            openModal('modalEdit');
+        }
+
+        function handleEditUser(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('e-id').value);
+            const preview = document.getElementById('e-avatar-preview');
+            const data = {
+                name: document.getElementById('e-nama').value,
+                email: document.getElementById('e-email').value,
+                role: document.getElementById('e-role').value,
+                status: document.getElementById('e-status').value
+            };
+            if (preview.dataset.imageData) data.avatar = preview.dataset.imageData;
+            updateUser(id, data);
+            closeModal('modalEdit');
+            showToast('Pengguna berhasil diperbarui!', 'success', 'Berhasil');
+            renderUsers();
+        }
+
+        // Detail
+        function openDetailModal(id) {
+            const u = getUserById(id);
+            if (!u) return;
+            const roleColor = u.role === 'Admin' ? '#8b5cf6' : (u.role === 'Penjual' ? 'var(--primary-blue)' : 'var(--primary-green)');
+            const roleBg = u.role === 'Admin' ? '#ede9fe' : (u.role === 'Penjual' ? '#dbeafe' : '#dcfce7');
+            document.getElementById('detail-body').innerHTML = `
+                <div style="text-align:center; margin-bottom:24px;">
+                    <div style="width:80px; height:80px; border-radius:50%; margin:0 auto 16px; overflow:hidden; border:3px solid var(--border-color);">
+                        ${u.avatar 
+                            ? `<img src="${u.avatar}" alt="${u.name}" style="width:100%; height:100%; object-fit:cover;">` 
+                            : `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #E8F5E9, #dbeafe); font-weight:700; font-size:2rem; color:var(--primary-green);">${u.name.charAt(0)}</div>`
+                        }
+                    </div>
+                    <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:4px;">${u.name}</h3>
+                    <span style="color:${roleColor}; background:${roleBg}; padding:3px 12px; border-radius:12px; font-size:0.8rem; font-weight:600;">${u.role}</span>
+                </div>
+                <div class="detail-info-row"><span class="detail-info-label">Email</span><span class="detail-info-value">${u.email}</span></div>
+                <div class="detail-info-row"><span class="detail-info-label">Status</span><span class="detail-info-value"><span style="color:${u.status==='Aktif'?'var(--primary-green)':'var(--danger)'}; background:${u.status==='Aktif'?'#dcfce7':'#fee2e2'}; padding:2px 10px; border-radius:12px; font-size:0.8rem; font-weight:600;">${u.status}</span></span></div>
+                <div class="detail-info-row"><span class="detail-info-label">Bergabung</span><span class="detail-info-value">${new Date(u.joinDate).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</span></div>
+                <div class="detail-info-row"><span class="detail-info-label">Transaksi</span><span class="detail-info-value">${u.trx}</span></div>
+            `;
+            openModal('modalDetail');
+        }
+
+        // Toggle Status
+        function doToggleUser(id) {
+            toggleUserStatus(id);
+            showToast('Status pengguna berhasil diperbarui', 'success', 'Diperbarui');
+            renderUsers();
+        }
+
+        // Hapus
+        function hapusUser(id) {
+            if (confirm('Hapus pengguna ini secara permanen?')) {
+                deleteUser(id);
+                showToast('Pengguna berhasil dihapus', 'info', 'Dihapus');
+                renderUsers();
+            }
+        }
+
+        // Render
+        function renderUsers() {
+            let users = getUsers();
+            
+            document.getElementById('u-tot').innerText = users.length;
+            document.getElementById('u-buy').innerText = users.filter(u=>u.role==='Pembeli').length;
+            document.getElementById('u-sel').innerText = users.filter(u=>u.role==='Penjual').length;
+            document.getElementById('u-ina').innerText = users.filter(u=>u.status==='Nonaktif').length;
+
+            const search = document.getElementById('admin-search-user').value.toLowerCase();
+            const role = document.getElementById('admin-role-user').value;
+            
+            if(search) users = users.filter(u => u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search));
+            if(role !== 'All') users = users.filter(u => u.role === role);
+
+            const tbody = document.querySelector('#admin-users-table tbody');
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="user-avatar">
+                                ${u.avatar 
+                                    ? `<img src="${u.avatar}" alt="${u.name}">` 
+                                    : u.name.charAt(0)
+                                }
+                            </div>
+                            <strong>${u.name}</strong>
+                        </div>
+                    </td>
+                    <td class="text-muted">${u.email}</td>
+                    <td><span style="color:${u.role==='Admin'?'#8b5cf6':(u.role==='Penjual'?'var(--primary-blue)':'var(--primary-green)')}; background:${u.role==='Admin'?'#ede9fe':(u.role==='Penjual'?'#dbeafe':'#dcfce7')}; padding:2px 8px; border-radius:12px; font-size:0.8rem; font-weight:600;">${u.role}</span></td>
+                    <td><span style="color:${u.status==='Aktif'?'var(--primary-green)':'var(--danger)'}; background:${u.status==='Aktif'?'#dcfce7':'#fee2e2'}; padding:2px 8px; border-radius:12px; font-size:0.8rem; font-weight:600;">${u.status}</span></td>
+                    <td>${new Date(u.joinDate).toLocaleDateString('id-ID')}</td>
+                    <td>${u.trx}</td>
+                    <td>
+                        <div class="action-btn-group">
+                            <button class="action-btn detail" onclick="openDetailModal(${u.id})" title="Detail"><i data-lucide="eye" width="14"></i></button>
+                            <button class="action-btn edit" onclick="openEditModal(${u.id})" title="Edit"><i data-lucide="edit" width="14"></i></button>
+                            <button class="action-btn" onclick="doToggleUser(${u.id})" title="${u.status==='Aktif'?'Nonaktifkan':'Aktifkan'}" style="color:${u.status==='Aktif'?'var(--danger)':'var(--primary-green)'};">
+                                <i data-lucide="${u.status==='Aktif'?'user-x':'user-check'}" width="14"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="hapusUser(${u.id})" title="Hapus"><i data-lucide="trash-2" width="14"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderUsers);
+    </script>
+</body>
+</html>

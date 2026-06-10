@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - BelanjaKita</title>
+    <meta name="description" content="Detail produk UMKM di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <a href="katalog.html" style="display:inline-flex; align-items:center; gap:8px; color:var(--text-muted); margin-bottom: 24px;" data-animate="fade-right">
+            <i data-lucide="arrow-left" width="18"></i> Kembali ke Katalog
+        </a>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;" id="detail-container">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            let id = parseInt(params.get('id'));
+            const products = getProducts();
+            const product = products.find(p => p.id === id) || products[0];
+
+            document.getElementById('detail-container').innerHTML = `
+            <div class="image-zoom-wrapper" data-animate="fade-right">
+                <img src="${product.image}" alt="${product.name}" style="width:100%; border-radius:var(--radius-lg); object-fit:cover;">
+            </div>
+            <div>
+                <span style="background:var(--primary-green); color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;" data-animate="fade-left" data-delay="100">${product.category}</span>
+                <h1 style="font-size:2rem; margin:16px 0 8px;" data-animate="fade-left" data-delay="150">${product.name}</h1>
+                <div style="display:flex; align-items:center; gap:16px; color:var(--text-muted); margin-bottom: 24px;" data-animate="fade-left" data-delay="200">
+                    <span style="display:flex; align-items:center; gap:4px; font-weight:600; color:var(--text-main);"><i data-lucide="star" fill="#FFC107" color="#FFC107" width="18"></i> ${product.rating}</span>
+                    <span>|</span>
+                    <span>Terjual ${product.sold}</span>
+                </div>
+                <div style="font-size:2rem; font-weight:700; color:var(--primary-green); margin-bottom: 24px;" data-animate="fade-left" data-delay="250">${formatRupiah(product.price)}</div>
+                <p style="color:var(--text-muted); margin-bottom: 32px;" data-animate="fade-left" data-delay="300">Produk UMKM berkualitas tinggi dari pengrajin lokal. Sangat direkomendasikan untuk Anda.</p>
+
+                <div style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-bottom: 32px; display:flex; align-items:center; gap:16px;" data-animate="fade-left" data-delay="350">
+                    <div style="width:48px; height:48px; background:#E8F5E9; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary-green);">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">${product.seller || 'UMKM Lokal'}</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">Penjual Terpercaya</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;" data-animate="fade-left" data-delay="400">
+                    <div style="font-weight:600; margin-bottom:8px;">Stok Tersedia</div>
+                    <div style="color:var(--text-muted);">${product.stock} unit</div>
+                </div>
+
+                <div style="display:flex; gap:16px;" data-animate="fade-up" data-delay="450">
+                    <button class="btn btn-primary" style="flex:1;" onclick='addToCart(${JSON.stringify(product)})'><i data-lucide="shopping-cart" width="18"></i> Tambah ke Keranjang</button>
+                    <a href="keranjang.html" class="btn btn-outline" style="flex:1;">Lihat Keranjang</a>
+                </div>
+            </div>
+            `;
+
+            // Re-init scroll reveal for dynamic content
+            const newEls = document.querySelectorAll('[data-animate]:not(.animated)');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const delay = parseInt(e.target.getAttribute('data-delay')) || 0;
+                        setTimeout(() => e.target.classList.add('animated'), delay);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            newEls.forEach(el => obs.observe(el));
+
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

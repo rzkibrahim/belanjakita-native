@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Artikel - Admin BelanjaKita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-admin.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="dashboard-admin.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-artikel.html" class="active"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="kelola-produk.html"><i data-lucide="package" width="18"></i> Produk</a></li>
+                <li><a href="kelola-pengguna.html"><i data-lucide="users" width="18"></i> Pengguna</a></li>
+                <li><a href="kelola-transaksi.html"><i data-lucide="file-spreadsheet" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <span style="display:flex; align-items:center; gap:8px; color:var(--text-muted);"><i data-lucide="shield-check" color="#8b5cf6" width="18"></i> Admin</span>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Kelola <span class="gradient-text">Artikel</span></h1>
+                <p>Tambah, edit, dan kelola artikel edukatif platform</p>
+            </div>
+            <div style="display:flex; gap:12px;">
+                <a href="arsip-artikel.html" class="btn btn-outline"><i data-lucide="archive" width="18"></i> Arsip <span id="arsip-count" style="background:#fef3c7; color:#d97706; padding:1px 8px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-left:4px;">0</span></a>
+                <button class="btn" style="background:#111; color:white;" onclick="openTambahModal()"><i data-lucide="plus" width="18"></i> Tambah Artikel</button>
+            </div>
+        </div>
+
+        <div class="form-control" style="max-width:400px; display:flex; align-items:center; gap:8px; margin-bottom:32px; background:white;" data-animate="fade-up" data-delay="100">
+            <i data-lucide="search" width="18" color="var(--text-muted)"></i>
+            <input type="text" id="search-artikel" placeholder="Cari artikel..." style="border:none; outline:none; background:transparent; width:100%;" onkeyup="renderArticles()">
+        </div>
+
+        <div class="grid-3" id="articles-container"></div>
+    </div>
+
+    <!-- Modal Tambah Artikel -->
+    <div class="modal" id="modalTambah">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem;">Tambah Artikel Baru</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Buat artikel edukatif baru</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('modalTambah')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-tambah" onsubmit="handleTambahArtikel(event)">
+                <div class="form-group">
+                    <label class="form-label">Judul Artikel *</label>
+                    <input type="text" id="t-judul" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ringkasan *</label>
+                    <textarea id="t-ringkasan" class="form-control" style="min-height:80px;" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Konten *</label>
+                    <textarea id="t-konten" class="form-control" style="min-height:150px;" required placeholder="Tulis konten artikel..."></textarea>
+                </div>
+                <div style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Kategori *</label>
+                        <select id="t-kategori" class="form-control">
+                            <option value="Bisnis">Bisnis</option>
+                            <option value="Tips">Tips</option>
+                            <option value="Produk Lokal">Produk Lokal</option>
+                            <option value="Teknologi">Teknologi</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Penulis *</label>
+                        <input type="text" id="t-penulis" class="form-control" value="Admin BelanjaKita">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gambar Artikel</label>
+                    <div class="file-upload-area">
+                        <input type="file" id="t-image" accept="image/*">
+                        <div class="upload-icon"><i data-lucide="image-plus" width="24"></i></div>
+                        <div class="upload-text">Klik atau seret gambar ke sini</div>
+                        <div class="upload-hint">Format: JPG, PNG, WebP (maks. 2MB)</div>
+                    </div>
+                    <div class="file-upload-preview" id="t-preview" style="margin-top:12px; display:none;"></div>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button type="submit" class="btn" style="flex:1; background:#111; color:white;">Publish Artikel</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalTambah')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Artikel -->
+    <div class="modal" id="modalEdit">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:1.25rem;">Edit Artikel</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;">Perbarui konten artikel</p>
+                </div>
+                <button class="modal-close" onclick="closeModal('modalEdit')"><i data-lucide="x"></i></button>
+            </div>
+            <form id="form-edit" onsubmit="handleEditArtikel(event)">
+                <input type="hidden" id="e-id">
+                <div class="form-group">
+                    <label class="form-label">Judul Artikel *</label>
+                    <input type="text" id="e-judul" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ringkasan *</label>
+                    <textarea id="e-ringkasan" class="form-control" style="min-height:80px;" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Konten *</label>
+                    <textarea id="e-konten" class="form-control" style="min-height:150px;" required></textarea>
+                </div>
+                <div style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Kategori *</label>
+                        <select id="e-kategori" class="form-control">
+                            <option value="Bisnis">Bisnis</option>
+                            <option value="Tips">Tips</option>
+                            <option value="Produk Lokal">Produk Lokal</option>
+                            <option value="Teknologi">Teknologi</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label class="form-label">Penulis *</label>
+                        <input type="text" id="e-penulis" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Gambar Artikel</label>
+                    <div class="file-upload-area">
+                        <input type="file" id="e-image" accept="image/*">
+                        <div class="upload-icon"><i data-lucide="image-plus" width="24"></i></div>
+                        <div class="upload-text">Klik untuk ganti gambar</div>
+                        <div class="upload-hint">Kosongkan jika tidak ingin mengubah</div>
+                    </div>
+                    <div class="file-upload-preview" id="e-preview" style="margin-top:12px;"></div>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:24px;">
+                    <button type="submit" class="btn" style="flex:1; background:#111; color:white;">Perbarui Artikel</button>
+                    <button type="button" class="btn btn-outline" onclick="closeModal('modalEdit')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detail Artikel -->
+    <div class="modal" id="modalDetail">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <h2 style="font-size:1.25rem;">Detail Artikel</h2>
+                <button class="modal-close" onclick="closeModal('modalDetail')"><i data-lucide="x"></i></button>
+            </div>
+            <div id="detail-body"></div>
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); lucide.createIcons(); }
+
+        function openTambahModal() {
+            document.getElementById('form-tambah').reset();
+            document.getElementById('t-preview').style.display = 'none';
+            document.getElementById('t-preview').innerHTML = '';
+            openModal('modalTambah');
+        }
+
+        // File upload handlers
+        document.getElementById('t-image').addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.size > 2 * 1024 * 1024) { showToast('Ukuran file maksimal 2MB', 'warning'); this.value = ''; return; }
+                const base64 = await fileToBase64(file);
+                const preview = document.getElementById('t-preview');
+                preview.style.display = 'block';
+                preview.innerHTML = `<img src="${base64}" alt="Preview">`;
+                preview.dataset.imageData = base64;
+            }
+        });
+        document.getElementById('e-image').addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.size > 2 * 1024 * 1024) { showToast('Ukuran file maksimal 2MB', 'warning'); this.value = ''; return; }
+                const base64 = await fileToBase64(file);
+                const preview = document.getElementById('e-preview');
+                preview.innerHTML = `<img src="${base64}" alt="Preview">`;
+                preview.dataset.imageData = base64;
+            }
+        });
+
+        // Tambah
+        function handleTambahArtikel(e) {
+            e.preventDefault();
+            const preview = document.getElementById('t-preview');
+            const article = {
+                title: document.getElementById('t-judul').value,
+                summary: document.getElementById('t-ringkasan').value,
+                content: document.getElementById('t-konten').value,
+                category: document.getElementById('t-kategori').value,
+                author: document.getElementById('t-penulis').value,
+                image: preview.dataset.imageData || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=250'
+            };
+            addArticle(article);
+            closeModal('modalTambah');
+            showToast('Artikel berhasil dipublish!', 'success', 'Berhasil');
+            renderArticles();
+        }
+
+        // Edit
+        function openEditModal(id) {
+            const a = getArticleById(id);
+            if (!a) return;
+            document.getElementById('e-id').value = a.id;
+            document.getElementById('e-judul').value = a.title;
+            document.getElementById('e-ringkasan').value = a.summary;
+            document.getElementById('e-konten').value = a.content;
+            document.getElementById('e-kategori').value = a.category;
+            document.getElementById('e-penulis').value = a.author;
+            const preview = document.getElementById('e-preview');
+            preview.innerHTML = `<img src="${a.image}" alt="Preview">`;
+            preview.dataset.imageData = '';
+            openModal('modalEdit');
+        }
+
+        function handleEditArtikel(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('e-id').value);
+            const preview = document.getElementById('e-preview');
+            const data = {
+                title: document.getElementById('e-judul').value,
+                summary: document.getElementById('e-ringkasan').value,
+                content: document.getElementById('e-konten').value,
+                category: document.getElementById('e-kategori').value,
+                author: document.getElementById('e-penulis').value
+            };
+            if (preview.dataset.imageData) data.image = preview.dataset.imageData;
+            updateArticle(id, data);
+            closeModal('modalEdit');
+            showToast('Artikel berhasil diperbarui!', 'success', 'Berhasil');
+            renderArticles();
+        }
+
+        // Detail
+        function openDetailModal(id) {
+            const a = getArticleById(id);
+            if (!a) return;
+            document.getElementById('detail-body').innerHTML = `
+                <img src="${a.image}" alt="${a.title}" class="detail-modal-img">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="color:var(--primary-green); font-weight:600; font-size:0.85rem; text-transform:uppercase;">${a.category}</span>
+                    <span style="font-size:0.8rem; color:var(--text-muted);"><i data-lucide="eye" width="14"></i> ${a.views} views</span>
+                </div>
+                <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:12px; line-height:1.4;">${a.title}</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px; line-height:1.6;">${a.summary}</p>
+                <div class="detail-info-row"><span class="detail-info-label">Penulis</span><span class="detail-info-value">${a.author}</span></div>
+                <div class="detail-info-row"><span class="detail-info-label">Tanggal</span><span class="detail-info-value">${new Date(a.date).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</span></div>
+                <div class="detail-info-row"><span class="detail-info-label">Views</span><span class="detail-info-value">${a.views}</span></div>
+                <div style="margin-top:20px;">
+                    <a href="detail-artikel.html?id=${a.id}" class="btn btn-primary" style="width:100%;"><i data-lucide="external-link" width="16"></i> Lihat Halaman Detail Lengkap</a>
+                </div>
+            `;
+            openModal('modalDetail');
+        }
+
+        // Arsip
+        function arsipkanArtikel(id) {
+            if (confirm('Arsipkan artikel ini? Artikel dapat dipulihkan dari halaman Arsip.')) {
+                archiveArticle(id);
+                showToast('Artikel berhasil diarsipkan', 'info', 'Diarsipkan');
+                renderArticles();
+            }
+        }
+
+        // Hapus
+        function hapusArtikel(id) {
+            if (confirm('Hapus artikel ini secara permanen?')) {
+                deleteArticle(id);
+                showToast('Artikel berhasil dihapus', 'info', 'Dihapus');
+                renderArticles();
+            }
+        }
+
+        // Render
+        function renderArticles() {
+            let articles = getArticles();
+            const archived = getArchivedArticles();
+            document.getElementById('arsip-count').innerText = archived.length;
+
+            const search = document.getElementById('search-artikel').value.toLowerCase();
+            if (search) articles = articles.filter(a => a.title.toLowerCase().includes(search) || a.summary.toLowerCase().includes(search));
+
+            const container = document.getElementById('articles-container');
+            if (articles.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-muted);"><i data-lucide="file-x" width="48" style="margin-bottom:16px; opacity:0.5;"></i><p style="font-size:1.1rem;">Belum ada artikel</p></div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = articles.map((a, i) => `
+                <div class="article-card stagger-item" style="animation-delay:${i*0.08}s;">
+                    <div style="overflow:hidden;"><img src="${a.image}" class="article-img"></div>
+                    <div class="article-info">
+                        <div class="article-pill" style="color:var(--primary-green); background:transparent; padding:0; margin-bottom:8px;">${a.category}</div>
+                        <h3 class="article-title">${a.title}</h3>
+                        <p class="article-desc">${a.summary}</p>
+                        <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Penulis:</span> <span>${a.author}</span></div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Views:</span> <span><i data-lucide="eye" width="14"></i> ${a.views}</span></div>
+                            <div style="display:flex; justify-content:space-between;"><span>Tanggal:</span> <span>${new Date(a.date).toLocaleDateString('id-ID')}</span></div>
+                        </div>
+                        <div style="display:flex; gap:8px; margin-top:auto;">
+                            <button class="btn btn-outline" style="flex:1; padding:8px;" onclick="openDetailModal(${a.id})"><i data-lucide="eye" width="15"></i> Detail</button>
+                            <button class="btn btn-outline" style="flex:1; padding:8px;" onclick="openEditModal(${a.id})"><i data-lucide="edit" width="15"></i> Edit</button>
+                            <button class="btn btn-outline" style="padding:8px; color:#d97706; border-color:#fef3c7; background:#fffbeb;" onclick="arsipkanArtikel(${a.id})" title="Arsipkan"><i data-lucide="archive" width="15"></i></button>
+                            <button class="btn btn-outline" style="padding:8px; color:var(--danger); border-color:#fee2e2; background:#fef2f2;" onclick="hapusArtikel(${a.id})" title="Hapus"><i data-lucide="trash-2" width="15"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderArticles);
+    </script>
+</body>
+</html>

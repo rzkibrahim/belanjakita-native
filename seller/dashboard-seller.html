@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Penjual - BelanjaKita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-seller.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita <span style="color:var(--text-muted); font-weight:400;">| Seller</span></a>
+            <ul class="nav-links">
+                <li><a href="dashboard-seller.html" class="active"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-produk.html"><i data-lucide="package" width="18"></i> Kelola Produk</a></li>
+                <li><a href="transaksi.html"><i data-lucide="file-text" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <h1 style="font-size:1.8rem; margin-bottom:24px;" data-animate="fade-right">Dashboard <span class="gradient-text">Penjual</span></h1>
+        <div class="grid-3" style="margin-bottom:32px;">
+            <div class="stat-card" data-animate="fade-up" data-delay="0">
+                <div class="stat-card-title">Total Produk <i data-lucide="package" width="20" color="var(--primary-blue)"></i></div>
+                <div class="stat-card-value" style="color:var(--primary-blue);" id="stat-prod">0</div>
+                <div class="stat-card-desc">Produk di etalase Anda</div>
+            </div>
+            <div class="stat-card" data-animate="fade-up" data-delay="80">
+                <div class="stat-card-title">Pesanan Masuk <i data-lucide="shopping-cart" width="20" color="var(--primary-green)"></i></div>
+                <div class="stat-card-value" style="color:var(--primary-green);" id="stat-order">0</div>
+                <div class="stat-card-desc">Pesanan yang perlu diproses</div>
+            </div>
+            <div class="stat-card" data-animate="fade-up" data-delay="160">
+                <div class="stat-card-title">Total Pendapatan <i data-lucide="wallet" width="20" color="#FFC107"></i></div>
+                <div class="stat-card-value" style="color:#FFC107;" id="stat-rev">Rp 0</div>
+                <div class="stat-card-desc">Estimasi penghasilan</div>
+            </div>
+        </div>
+        
+        <div class="card" data-animate="fade-up" data-delay="200">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="margin:0;">Pesanan Perlu Diproses</h3>
+                <a href="transaksi.html" style="color:var(--primary-blue); font-size:0.9rem; font-weight:500;">Lihat Semua Transaksi</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table" id="seller-orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pesanan</th>
+                            <th>Tanggal</th>
+                            <th>Total</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('stat-prod').innerText = getProducts().length;
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            document.getElementById('stat-order').innerText = orders.length;
+            
+            let totalRev = orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('stat-rev').innerText = formatRupiah(totalRev);
+            
+            const tbody = document.querySelector('#seller-orders-table tbody');
+            if(orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">Belum ada pesanan masuk</td></tr>';
+            } else {
+                tbody.innerHTML = orders.slice(0, 5).map(o => `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${new Date(o.date).toLocaleDateString('id-ID')}</td>
+                        <td>${formatRupiah(o.total)}</td>
+                        <td><button class="btn btn-outline" style="padding:4px 12px; font-size:0.85rem;">Proses</button></td>
+                    </tr>
+                `).join('');
+            }
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembeli - Detail Artikel 1</title>
+    <meta name="description" content="Strategi Meningkatkan Penjualan UMKM di Era Digital - BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* ====== ARTICLE DETAIL PAGE STYLES ====== */
+        .article-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            transition: var(--transition);
+        }
+        .article-back-link:hover { color: var(--primary-green); }
+
+        .article-detail-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 48px;
+            align-items: start;
+        }
+
+        /* ---- Main Content ---- */
+        .article-main {}
+
+        .article-category-badge {
+            display: inline-block;
+            background: #111;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .article-detail-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .article-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .article-detail-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .article-detail-meta .author { font-weight: 600; color: var(--text-main); }
+
+        .article-cover-img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            margin-bottom: 32px;
+        }
+
+        /* ---- Article Body Typography ---- */
+        .article-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.85;
+        }
+        .article-body p {
+            margin-bottom: 20px;
+        }
+        .article-body h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 36px 0 14px;
+            line-height: 1.4;
+        }
+        .article-body h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 24px 0 10px;
+        }
+        .article-body ul, .article-body ol {
+            padding-left: 24px;
+            margin-bottom: 20px;
+        }
+        .article-body ul { list-style: disc; }
+        .article-body ol { list-style: decimal; }
+        .article-body li {
+            margin-bottom: 8px;
+            color: #374151;
+            line-height: 1.75;
+        }
+        .article-body blockquote {
+            border-left: 4px solid var(--primary-green);
+            background: #f0fdf4;
+            padding: 16px 20px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 28px 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+        .article-body blockquote p { margin: 0; }
+        .article-body .highlight-box {
+            background: linear-gradient(135deg, #f0fdf4, #e8f5e9);
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin: 28px 0;
+        }
+        .article-body .highlight-box p { margin: 0; color: #166534; font-weight: 500; }
+
+        /* ---- Tags ---- */
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        .article-tags span {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ---- Sidebar ---- */
+        .article-sidebar {}
+
+        .sidebar-widget {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .sidebar-widget-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Related Articles */
+        .related-article-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .related-article-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .related-article-item:hover .related-article-title { color: var(--primary-green); }
+        .related-article-item img {
+            width: 72px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        .related-article-info {}
+        .related-article-pill {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+        .related-article-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+        .related-article-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* TOC */
+        .toc-list { list-style: none; padding: 0; }
+        .toc-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+        }
+        .toc-list li:last-child { border-bottom: none; }
+        .toc-list a {
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .toc-list a:hover { color: var(--primary-green); }
+        .toc-num {
+            background: var(--primary-green);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Share */
+        .share-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+        .share-btn.wa  { background: #25D366; color: white; }
+        .share-btn.tw  { background: #1DA1F2; color: white; }
+        .share-btn.cp  { background: var(--bg-light); color: var(--text-main); border: 1px solid var(--border-color); }
+        .share-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand">
+                <i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita
+            </a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html" class="active"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn">
+                    <i data-lucide="shopping-cart" width="20"></i>
+                    <span class="badge cart-badge-count">0</span>
+                </a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="container" style="padding-top: 36px; padding-bottom: 80px;">
+
+        <!-- Back Link -->
+        <a href="artikel.html" class="article-back-link" data-animate="fade-right">
+            <i data-lucide="arrow-left" width="16"></i> Kembali ke Artikel
+        </a>
+
+        <div class="article-detail-wrapper">
+
+            <!-- ========== LEFT: ARTICLE BODY ========== -->
+            <div class="article-main">
+
+                <div class="article-category-badge" data-animate="fade-up">Bisnis</div>
+
+                <h1 class="article-detail-title" data-animate="fade-up" data-delay="50">
+                    Strategi Meningkatkan Penjualan UMKM di Era Digital
+                </h1>
+
+                <div class="article-detail-meta">
+                    <span>
+                        <i data-lucide="user" width="15"></i>
+                        <span class="author">Tim BelanjaKita</span>
+                    </span>
+                    <span>
+                        <i data-lucide="calendar" width="15"></i>
+                        25 Oktober 2025
+                    </span>
+                    <span>
+                        <i data-lucide="clock" width="15"></i>
+                        7 menit baca
+                    </span>
+                    <span>
+                        <i data-lucide="eye" width="15"></i>
+                        1.234 views
+                    </span>
+                </div>
+
+                <!-- Cover Image -->
+                <div class="image-zoom-wrapper" data-animate="fade-up" data-delay="100">
+                <img
+                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=900&h=420"
+                    alt="Strategi Digital UMKM"
+                    class="article-cover-img"
+                >
+                </div>
+
+                <!-- Article Body -->
+                <div class="article-body">
+
+                    <p>
+                        Di era digital seperti sekarang, kehadiran online bukan lagi pilihan melainkan kebutuhan mendasar bagi setiap pelaku Usaha Mikro, Kecil, dan Menengah (UMKM). Persaingan pasar yang semakin ketat mendorong para pengusaha lokal untuk beradaptasi dengan cepat agar tetap relevan dan kompetitif.
+                    </p>
+
+                    <div class="highlight-box">
+                        <p>💡 Menurut data Kementerian Koperasi dan UKM, UMKM yang aktif berjualan secara digital memiliki potensi pertumbuhan pendapatan hingga <strong>40% lebih tinggi</strong> dibanding yang masih bergantung pada saluran offline saja.</p>
+                    </div>
+
+                    <h2 id="media-sosial">1. Optimalkan Media Sosial</h2>
+                    <p>
+                        Media sosial adalah alat pemasaran gratis yang sangat powerful. Platform seperti Instagram, TikTok, dan Facebook memiliki ratusan juta pengguna aktif di Indonesia dan sebagian besar dari mereka adalah calon pelanggan potensial Anda.
+                    </p>
+                    <p>
+                        Kunci keberhasilan di media sosial bukan sekadar memposting foto produk, tetapi membangun <em>brand identity</em> yang konsisten dan konten yang memberikan nilai bagi audiens. Berikut langkah-langkah yang bisa Anda mulai:
+                    </p>
+                    <ul>
+                        <li><strong>Posting secara konsisten</strong> minimal 4–5 kali per minggu agar algoritma terus mendorong konten Anda ke lebih banyak orang.</li>
+                        <li><strong>Gunakan Reels dan Short Video</strong> format video pendek saat ini mendapatkan jangkauan organik paling besar.</li>
+                        <li><strong>Interaksi aktif</strong> balas komentar, DM, dan story pelanggan untuk membangun hubungan yang lebih personal.</li>
+                        <li><strong>Manfaatkan fitur toko</strong> Instagram Shop dan TikTok Shop memudahkan pelanggan berbelanja langsung dari konten Anda.</li>
+                    </ul>
+
+                    <blockquote>
+                        <p>"Konten yang autentik dan jujur jauh lebih dipercaya dibanding konten yang terlalu 'jualan'. Ceritakan kisah di balik produk Anda."</p>
+                    </blockquote>
+
+                    <h2 id="ecommerce">2. Gunakan Platform E-Commerce Lokal</h2>
+                    <p>
+                        Platform seperti BelanjaKita, Tokopedia, Shopee, dan Lazada memberikan kesempatan bagi UMKM untuk menjangkau pasar yang jauh lebih luas. Dengan mendaftarkan toko di marketplace, produk Anda bisa ditemukan oleh jutaan pembeli dari seluruh Indonesia.
+                    </p>
+                    <p>
+                        Tips agar toko Anda menonjol di marketplace:
+                    </p>
+                    <ol>
+                        <li>Gunakan foto produk berkualitas tinggi dengan latar yang bersih dan pencahayaan yang baik.</li>
+                        <li>Tulis deskripsi produk yang lengkap, jelas, dan mengandung kata kunci yang relevan.</li>
+                        <li>Pertahankan rating bintang 5 dengan memberikan pelayanan terbaik dan respons cepat.</li>
+                        <li>Ikut program promosi seperti Flash Sale, Voucher Toko, atau Gratis Ongkir.</li>
+                        <li>Pantau performa toko secara rutin menggunakan fitur analitik yang tersedia.</li>
+                    </ol>
+
+                    <h2 id="seo-lokal">3. Manfaatkan SEO Lokal</h2>
+                    <p>
+                        Banyak UMKM yang belum menyadari pentingnya SEO lokal. Ketika seseorang mencari "kue kering enak di Bandung" atau "tas kulit Yogyakarta", Anda ingin toko Anda muncul di hasil teratas Google.
+                    </p>
+                    <p>
+                        Daftarkan bisnis Anda di <strong>Google Business Profile</strong> (Google My Business) secara gratis. Tambahkan foto, jam operasional, nomor telepon, dan minta pelanggan untuk meninggalkan ulasan positif. Ini akan meningkatkan visibilitas Anda secara signifikan di pencarian lokal.
+                    </p>
+
+                    <h2 id="loyalitas">4. Program Loyalitas Pelanggan</h2>
+                    <p>
+                        Mendapatkan pelanggan baru memang penting, tetapi mempertahankan pelanggan lama jauh lebih hemat biaya. Pelanggan yang puas dan loyal cenderung melakukan pembelian berulang dan merekomendasikan produk Anda ke orang-orang terdekat mereka.
+                    </p>
+                    <p>
+                        Pertimbangkan untuk membuat program sederhana seperti:
+                    </p>
+                    <ul>
+                        <li>Kartu poin atau stamp digital "Beli 9 gratis 1".</li>
+                        <li>Diskon khusus pelanggan setia di hari ulang tahun mereka.</li>
+                        <li>Grup komunitas eksklusif (WhatsApp/Telegram) untuk update produk dan penawaran spesial.</li>
+                        <li>Sistem referral berikan komisi atau diskon untuk setiap teman yang berhasil mereka ajak berbelanja.</li>
+                    </ul>
+
+                    <h2 id="analitik">5. Analisis Data Secara Berkala</h2>
+                    <p>
+                        Keputusan bisnis terbaik didasarkan pada data, bukan tebakan. Luangkan waktu setidaknya sekali seminggu untuk meninjau performa penjualan, produk mana yang paling laku, dari mana asal pelanggan, dan jam berapa transaksi paling banyak terjadi.
+                    </p>
+                    <p>
+                        Gunakan alat gratis seperti Google Analytics untuk website, Instagram Insights untuk media sosial, atau dashboard analitik bawaan marketplace. Data ini akan membantu Anda mengalokasikan anggaran pemasaran dengan lebih tepat sasaran.
+                    </p>
+
+                    <div class="highlight-box">
+                        <p>✅ <strong>Ringkasan:</strong> Kombinasi yang tepat antara media sosial aktif, kehadiran di marketplace, SEO lokal, program loyalitas, dan analisis data adalah fondasi kuat untuk mengembangkan UMKM Anda di era digital.</p>
+                    </div>
+
+                    <p>
+                        Perjalanan digitalisasi UMKM memang tidak selalu mulus, namun dengan konsistensi dan kemauan untuk terus belajar, peluang kesuksesan selalu terbuka lebar. Mulailah dari langkah kecil, ukur hasilnya, dan terus tingkatkan.
+                    </p>
+
+                </div><!-- end article-body -->
+
+                <!-- Tags -->
+                <div class="article-tags">
+                    <span># UMKM</span>
+                    <span># Digital Marketing</span>
+                    <span># E-Commerce</span>
+                    <span># Bisnis Lokal</span>
+                    <span># Media Sosial</span>
+                    <span># Strategi Penjualan</span>
+                </div>
+
+            </div><!-- end article-main -->
+
+            <!-- ========== RIGHT: SIDEBAR ========== -->
+            <aside class="article-sidebar">
+
+                <!-- Table of Contents -->
+                <div class="sidebar-widget" data-animate="fade-left">
+                    <div class="sidebar-widget-title">📋 Daftar Isi</div>
+                    <ul class="toc-list">
+                        <li><a href="#media-sosial"><span class="toc-num">1</span> Optimalkan Media Sosial</a></li>
+                        <li><a href="#ecommerce"><span class="toc-num">2</span> Platform E-Commerce Lokal</a></li>
+                        <li><a href="#seo-lokal"><span class="toc-num">3</span> Manfaatkan SEO Lokal</a></li>
+                        <li><a href="#loyalitas"><span class="toc-num">4</span> Program Loyalitas Pelanggan</a></li>
+                        <li><a href="#analitik"><span class="toc-num">5</span> Analisis Data Berkala</a></li>
+                    </ul>
+                </div>
+
+                <!-- Related Articles -->
+                <div class="sidebar-widget" data-animate="fade-left" data-delay="200">
+                    <div class="sidebar-widget-title">📰 Artikel Lainnya</div>
+
+                    <div class="related-article-item" onclick="window.location.href='detail-artikel.html'">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=150&h=100" alt="Tips Belanja">
+                        <div class="related-article-info">
+                            <div class="related-article-pill">Tips</div>
+                            <div class="related-article-title">Tips Berbelanja Online yang Aman dan Nyaman</div>
+                            <div class="related-article-date">28 Oktober 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="related-article-item" onclick="window.location.href='detail-artikel.html'">
+                        <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&q=80&w=150&h=100" alt="Produk Lokal">
+                        <div class="related-article-info">
+                            <div class="related-article-pill">Produk Lokal</div>
+                            <div class="related-article-title">Mengenal Produk Lokal Indonesia yang Mendunia</div>
+                            <div class="related-article-date">2 November 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="related-article-item" onclick="window.location.href='detail-artikel.html'">
+                        <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&q=80&w=150&h=100" alt="Pembayaran Digital">
+                        <div class="related-article-info">
+                            <div class="related-article-pill">Teknologi</div>
+                            <div class="related-article-title">Tren Pembayaran Digital yang Wajib Diketahui UMKM</div>
+                            <div class="related-article-date">10 November 2025</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div><!-- end article-detail-wrapper -->
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        lucide.createIcons();
+
+        function shareWA() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Baca artikel ini: Strategi Meningkatkan Penjualan UMKM di Era Digital - BelanjaKita');
+            window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+        }
+        function shareTW() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Strategi Meningkatkan Penjualan UMKM di Era Digital');
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+        }
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = document.getElementById('btn-copy');
+                btn.innerHTML = '<i data-lucide="check" width="14"></i> Tersalin!';
+                btn.style.background = '#dcfce7';
+                btn.style.borderColor = '#86efac';
+                btn.style.color = '#166534';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btn.innerHTML = '<i data-lucide="link" width="14"></i> Salin Link';
+                    btn.style = '';
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

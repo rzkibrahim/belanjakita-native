@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Artikel - Admin BelanjaKita</title>
+    <meta name="description" content="Detail Artikel - Admin BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .article-detail-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 48px;
+            align-items: start;
+        }
+        .article-category-badge {
+            display: inline-block;
+            background: #111;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .article-detail-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+        .article-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .article-detail-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .article-detail-meta .author { font-weight: 600; color: var(--text-main); }
+        .article-cover-img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            margin-bottom: 32px;
+        }
+        .article-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.85;
+        }
+        .article-body p { margin-bottom: 20px; }
+        .article-body h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 36px 0 14px;
+            line-height: 1.4;
+        }
+        .article-body ul, .article-body ol {
+            padding-left: 24px;
+            margin-bottom: 20px;
+        }
+        .article-body ul { list-style: disc; }
+        .article-body ol { list-style: decimal; }
+        .article-body li {
+            margin-bottom: 8px;
+            color: #374151;
+            line-height: 1.75;
+        }
+        .article-body blockquote {
+            border-left: 4px solid var(--primary-green);
+            background: #f0fdf4;
+            padding: 16px 20px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 28px 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+        .article-body blockquote p { margin: 0; }
+        .article-body .highlight-box {
+            background: linear-gradient(135deg, #f0fdf4, #e8f5e9);
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin: 28px 0;
+        }
+        .article-body .highlight-box p { margin: 0; color: #166534; font-weight: 500; }
+        .sidebar-widget {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .sidebar-widget-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+        .article-tags span {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .related-article-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .related-article-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .related-article-item:hover .related-article-title { color: var(--primary-green); }
+        .related-article-item img {
+            width: 72px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        .related-article-pill {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+        .related-article-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+        .related-article-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-admin.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="dashboard-admin.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-artikel.html" class="active"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="kelola-produk.html"><i data-lucide="package" width="18"></i> Produk</a></li>
+                <li><a href="kelola-pengguna.html"><i data-lucide="users" width="18"></i> Pengguna</a></li>
+                <li><a href="kelola-transaksi.html"><i data-lucide="file-spreadsheet" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <span style="display:flex; align-items:center; gap:8px; color:var(--text-muted);"><i data-lucide="shield-check" color="#8b5cf6" width="18"></i> Admin</span>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 36px; padding-bottom: 80px;">
+        <a href="kelola-artikel.html" style="display:inline-flex; align-items:center; gap:6px; font-size:0.9rem; font-weight:500; color:var(--text-muted); margin-bottom:28px;" data-animate="fade-right">
+            <i data-lucide="arrow-left" width="16"></i> Kembali ke Kelola Artikel
+        </a>
+
+        <div class="article-detail-wrapper">
+            <div class="article-main" id="article-main">
+                <!-- Rendered by JS -->
+            </div>
+
+            <aside class="article-sidebar" id="article-sidebar">
+                <!-- Rendered by JS -->
+            </aside>
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            let id = parseInt(params.get('id'));
+            const articles = getArticles();
+            const article = articles.find(a => a.id === id) || articles[0];
+
+            if (!article) {
+                document.getElementById('article-main').innerHTML = '<p style="color:var(--text-muted);">Artikel tidak ditemukan.</p>';
+                return;
+            }
+
+            // Calculate read time (approx 200 words per minute)
+            const wordCount = article.content.replace(/<[^>]+>/g, '').split(/\s+/).length;
+            const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+            document.getElementById('article-main').innerHTML = `
+                <div class="article-category-badge" data-animate="fade-up">${article.category}</div>
+                <h1 class="article-detail-title" data-animate="fade-up" data-delay="50">${article.title}</h1>
+                <div class="article-detail-meta">
+                    <span><i data-lucide="user" width="15"></i><span class="author">${article.author}</span></span>
+                    <span><i data-lucide="calendar" width="15"></i>${new Date(article.date).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</span>
+                    <span><i data-lucide="clock" width="15"></i>${readTime} menit baca</span>
+                    <span><i data-lucide="eye" width="15"></i>${article.views.toLocaleString('id-ID')} views</span>
+                </div>
+                <div class="image-zoom-wrapper" data-animate="fade-up" data-delay="100">
+                    <img src="${article.image}" alt="${article.title}" class="article-cover-img">
+                </div>
+                <div class="article-body">${article.content}</div>
+                <div class="article-tags">
+                    <span># ${article.category}</span>
+                    <span># UMKM</span>
+                    <span># BelanjaKita</span>
+                </div>
+            `;
+
+            // Sidebar with related articles
+            const otherArticles = articles.filter(a => a.id !== article.id).slice(0, 3);
+            document.getElementById('article-sidebar').innerHTML = `
+                <div class="sidebar-widget" data-animate="fade-left">
+                    <div class="sidebar-widget-title">📋 Info Artikel</div>
+                    <div class="detail-info-row"><span class="detail-info-label">Penulis</span><span class="detail-info-value">${article.author}</span></div>
+                    <div class="detail-info-row"><span class="detail-info-label">Kategori</span><span class="detail-info-value">${article.category}</span></div>
+                    <div class="detail-info-row"><span class="detail-info-label">Views</span><span class="detail-info-value">${article.views.toLocaleString('id-ID')}</span></div>
+                    <div class="detail-info-row"><span class="detail-info-label">Tanggal</span><span class="detail-info-value">${new Date(article.date).toLocaleDateString('id-ID')}</span></div>
+                </div>
+                ${otherArticles.length > 0 ? `
+                <div class="sidebar-widget" data-animate="fade-left" data-delay="200">
+                    <div class="sidebar-widget-title">📰 Artikel Lainnya</div>
+                    ${otherArticles.map(a => `
+                        <div class="related-article-item" onclick="window.location.href='detail-artikel.html?id=${a.id}'">
+                            <img src="${a.image}" alt="${a.title}">
+                            <div>
+                                <div class="related-article-pill">${a.category}</div>
+                                <div class="related-article-title">${a.title}</div>
+                                <div class="related-article-date">${new Date(a.date).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>` : ''}
+            `;
+
+            // Re-init animations
+            const newEls = document.querySelectorAll('[data-animate]:not(.animated)');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const delay = parseInt(e.target.getAttribute('data-delay')) || 0;
+                        setTimeout(() => e.target.classList.add('animated'), delay);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            newEls.forEach(el => obs.observe(el));
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

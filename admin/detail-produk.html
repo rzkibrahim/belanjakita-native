@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - Admin BelanjaKita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="dashboard-admin.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="dashboard-admin.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="kelola-artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="kelola-produk.html" class="active"><i data-lucide="package" width="18"></i> Produk</a></li>
+                <li><a href="kelola-pengguna.html"><i data-lucide="users" width="18"></i> Pengguna</a></li>
+                <li><a href="kelola-transaksi.html"><i data-lucide="file-spreadsheet" width="18"></i> Transaksi</a></li>
+            </ul>
+            <div class="nav-actions">
+                <span style="display:flex; align-items:center; gap:8px; color:var(--text-muted);"><i data-lucide="shield-check" color="#8b5cf6" width="18"></i> Admin</span>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="log-out" width="18"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <a href="kelola-produk.html" style="display:inline-flex; align-items:center; gap:8px; color:var(--text-muted); margin-bottom: 24px; font-weight:500; font-size:0.9rem;" data-animate="fade-right">
+            <i data-lucide="arrow-left" width="18"></i> Kembali ke Kelola Produk
+        </a>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;" id="detail-container">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            let id = parseInt(params.get('id'));
+            const products = getProducts();
+            const product = products.find(p => p.id === id) || products[0];
+
+            if (!product) {
+                document.getElementById('detail-container').innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-muted);">Produk tidak ditemukan.</p>';
+                return;
+            }
+
+            document.getElementById('detail-container').innerHTML = `
+            <div class="image-zoom-wrapper" data-animate="fade-right">
+                <img src="${product.image}" alt="${product.name}" style="width:100%; border-radius:var(--radius-lg); object-fit:cover;">
+            </div>
+            <div>
+                <span style="background:var(--primary-green); color:white; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;" data-animate="fade-left" data-delay="100">${product.category}</span>
+                <h1 style="font-size:2rem; margin:16px 0 8px;" data-animate="fade-left" data-delay="150">${product.name}</h1>
+                <div style="display:flex; align-items:center; gap:16px; color:var(--text-muted); margin-bottom: 24px;" data-animate="fade-left" data-delay="200">
+                    <span style="display:flex; align-items:center; gap:4px; font-weight:600; color:var(--text-main);"><i data-lucide="star" fill="#FFC107" color="#FFC107" width="18"></i> ${product.rating}</span>
+                    <span>|</span>
+                    <span>Terjual ${product.sold}</span>
+                </div>
+                <div style="font-size:2rem; font-weight:700; color:var(--primary-green); margin-bottom: 24px;" data-animate="fade-left" data-delay="250">${formatRupiah(product.price)}</div>
+                <p style="color:var(--text-muted); margin-bottom: 32px; line-height:1.7;" data-animate="fade-left" data-delay="300">${product.desc || 'Produk UMKM berkualitas tinggi dari pengrajin lokal.'}</p>
+
+                <div style="border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-bottom: 32px; display:flex; align-items:center; gap:16px;" data-animate="fade-left" data-delay="350">
+                    <div style="width:48px; height:48px; background:#E8F5E9; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--primary-green);">
+                        <i data-lucide="store"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">${product.seller || 'UMKM Lokal'}</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">Penjual Terpercaya</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;" data-animate="fade-left" data-delay="400">
+                    <div style="font-weight:600; margin-bottom:8px;">Stok Tersedia</div>
+                    <div style="color:var(--text-muted);">${product.stock} unit</div>
+                </div>
+
+                <div style="display:flex; gap:16px;" data-animate="fade-up" data-delay="450">
+                    <a href="kelola-produk.html" class="btn btn-primary" style="flex:1;"><i data-lucide="arrow-left" width="18"></i> Kembali</a>
+                </div>
+            </div>
+            `;
+
+            const newEls = document.querySelectorAll('[data-animate]:not(.animated)');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const delay = parseInt(e.target.getAttribute('data-delay')) || 0;
+                        setTimeout(() => e.target.classList.add('animated'), delay);
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            newEls.forEach(el => obs.observe(el));
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
