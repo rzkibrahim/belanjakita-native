@@ -89,7 +89,12 @@
                         </div>
                         <div style="display:flex; gap:12px; align-items:center;">
                             <span style="background:#E8F5E9; color:var(--primary-green); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${o.status}</span>
-                            <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;"><option selected>${o.status}</option><option>Diproses</option><option>Terkirim</option></select>
+                            <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;" onchange="handleStatusChange('${o.id}', this.value)">
+                                <option value="Menunggu" ${o.status === 'Menunggu' ? 'selected' : ''}>Menunggu</option>
+                                <option value="Dibayar" ${o.status === 'Dibayar' ? 'selected' : ''}>Dibayar</option>
+                                <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                <option value="Terkirim" ${o.status === 'Terkirim' ? 'selected' : ''}>Terkirim</option>
+                            </select>
                         </div>
                     </div>
 
@@ -128,6 +133,14 @@
             `).join('');
             lucide.createIcons();
         });
+
+        function handleStatusChange(id, newStatus) {
+            if (updateOrderStatus(id, newStatus)) {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
     </script>
 </body>
 </html>

@@ -225,6 +225,23 @@ function deleteArchivedArticle(id) {
     saveArchivedArticles(archived);
 }
 
+// --- ORDER CRUD ---
+function getOrders() { return JSON.parse(localStorage.getItem(KEYS.ORDERS)); }
+function saveOrders(orders) { localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders)); }
+function updateOrderStatus(id, status) {
+    let orders = getOrders();
+    const idx = orders.findIndex(o => o.id === id);
+    if (idx !== -1) {
+        orders[idx].status = status;
+        saveOrders(orders);
+        if (typeof showToast === 'function') {
+            showToast('Status pesanan berhasil diubah', 'success', 'Berhasil');
+        }
+        return true;
+    }
+    return false;
+}
+
 // --- CART LOGIC ---
 function getCart() { return JSON.parse(localStorage.getItem(KEYS.CART)); }
 function saveCart(cart) { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); updateCartBadge(); }

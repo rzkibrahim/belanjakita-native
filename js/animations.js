@@ -472,23 +472,36 @@
     }
 
     // ==========================================
-    // INIT ALL ON DOM READY
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        initScrollReveal();
-        initNavbarGlass();
-        initRipple();
-        initTiltCards();
-        initParallax();
-        initBackToTop();
-        initPageTransitions();
-        initImageEntrance();
-        initAmbientParticles();
+// INIT ALL ON DOM READY
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    initScrollReveal();
+    initNavbarGlass();
+    initRipple();
+    initTiltCards();
+    initParallax();
+    initBackToTop();
+    initPageTransitions();
+    initImageEntrance();
+    initAmbientParticles();
 
-        // Initialize Lucide icons globally so every page renders nav icons
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    });
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+
+// Expose a reinit function so pages that inject content dynamically
+// (e.g. product cards loaded via JS after DOMContentLoaded) can
+// re-apply scroll reveal, tilt, page-transition, and image-entrance
+// animations to the new elements.
+window.reinitAnimations = function () {
+    initScrollReveal();
+    initTiltCards();
+    initPageTransitions();
+    initImageEntrance();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    };
 
 })();

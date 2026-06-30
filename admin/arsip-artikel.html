@@ -74,7 +74,7 @@
 
             if (archived.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align:center; padding:80px 20px; color:var(--text-muted);" data-animate="fade-up">
+                    <div style="text-align:center; padding:80px 20px; color:var(--text-muted);" class="stagger-item">
                         <div style="width:80px; height:80px; background:linear-gradient(135deg, #fef3c7, #fde68a); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
                             <i data-lucide="archive" width="36" color="#d97706"></i>
                         </div>
@@ -88,7 +88,7 @@
             }
 
             container.innerHTML = `
-                <div class="card" data-animate="fade-up" data-delay="100">
+                <div class="card stagger-item">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                         <span style="font-weight:600; color:var(--text-main);">${archived.length} artikel diarsipkan</span>
                     </div>
