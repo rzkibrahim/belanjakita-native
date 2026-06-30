@@ -27,15 +27,18 @@
     </nav>
 
     <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
-        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+        <div class="page-header" style="padding-top:0;">
             <div class="page-title">
                 <h1>Kelola <span class="gradient-text">Transaksi</span></h1>
                 <p>Pantau dan kelola semua transaksi di platform</p>
             </div>
-            <select class="form-control" style="width:200px; background:white;">
-                <option>Semua Status</option>
-                <option>Terkirim</option>
-                <option>Diproses</option>
+            <select class="form-control" style="width:200px; background:white;" id="filter-status">
+                <option value="Semua">Semua Status</option>
+                <option value="Menunggu">Menunggu</option>
+                <option value="Dibayar">Dibayar</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Dikirim">Dikirim</option>
+                <option value="Terkirim">Terkirim</option>
             </select>
         </div>
 
@@ -45,15 +48,15 @@
                 <div class="stat-card-title" style="justify-content:center;">Total</div>
             </div>
             <div class="stat-card" style="box-shadow:none; text-align:center;">
-                <div class="stat-card-value" style="font-size:1.5rem;">0</div>
+                <div class="stat-card-value" style="font-size:1.5rem;" id="stat-menunggu">0</div>
                 <div class="stat-card-title" style="justify-content:center;">Menunggu</div>
             </div>
             <div class="stat-card" style="box-shadow:none; text-align:center;">
-                <div class="stat-card-value" style="font-size:1.5rem;">0</div>
+                <div class="stat-card-value" style="font-size:1.5rem;" id="stat-diproses">0</div>
                 <div class="stat-card-title" style="justify-content:center;">Diproses</div>
             </div>
             <div class="stat-card" style="box-shadow:none; text-align:center;">
-                <div class="stat-card-value" style="font-size:1.5rem;">0</div>
+                <div class="stat-card-value" style="font-size:1.5rem;" id="stat-dikirim">0</div>
                 <div class="stat-card-title" style="justify-content:center;">Dikirim</div>
             </div>
             <div class="stat-card" style="box-shadow:none; text-align:center;">
@@ -70,29 +73,55 @@
     <script src="../js/store.js"></script>
     <script src="../js/animations.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        let currentFilter = 'Semua';
+
+        function updateStats() {
             const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
             document.getElementById('stat-total').innerText = orders.length;
+            document.getElementById('stat-menunggu').innerText = orders.filter(o => o.status === 'Menunggu').length;
+            document.getElementById('stat-diproses').innerText = orders.filter(o => o.status === 'Diproses').length;
+            document.getElementById('stat-dikirim').innerText = orders.filter(o => o.status === 'Dikirim').length;
             document.getElementById('stat-terkirim').innerText = orders.filter(o => o.status === 'Terkirim' || o.status === 'Dibayar').length;
-            
+        }
+
+        function getStatusBadge(status) {
+            const colors = {
+                'Menunggu': 'background:#FFF3CD; color:#856404;',
+                'Dibayar': 'background:#D1ECF1; color:#0C5460;',
+                'Diproses': 'background:#CCE5FF; color:#004085;',
+                'Dikirim': 'background:#D4EDDA; color:#155724;',
+                'Terkirim': 'background:#E8F5E9; color:var(--primary-green);'
+            };
+            return `<span style="${colors[status] || 'background:#E8F5E9; color:var(--primary-green);'} padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${status}</span>`;
+        }
+
+        function renderOrders() {
+            const allOrders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            const orders = currentFilter === 'Semua' 
+                ? allOrders 
+                : allOrders.filter(o => o.status === currentFilter);
+
             const container = document.getElementById('admin-orders-container');
-            if(orders.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center">Belum ada transaksi.</p>';
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center" style="padding:40px 0;">Tidak ada transaksi dengan status "' + currentFilter + '".</p>';
                 return;
             }
+
             container.innerHTML = orders.map((o, idx) => `
-                <div class="stagger-item" style="border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; background:white; animation-delay:${idx * 0.1}s; transition: all 0.3s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow=''">
+                <div style="border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:24px; background:white; transition: all 0.3s;" onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow=''">
                     <div style="display:flex; justify-content:space-between; margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:16px; background:#fafafa; margin:-24px -24px 24px -24px; padding:24px; border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
                         <div>
                             <div style="font-weight:700; display:flex; align-items:center; gap:8px;"><i data-lucide="box" width="18" color="var(--primary-green)"></i> ${o.id}</div>
                             <div style="font-size:0.85rem; color:var(--text-muted);">${new Date(o.date).toLocaleString('id-ID')}</div>
                         </div>
                         <div style="display:flex; gap:12px; align-items:center;">
-                            <span style="background:#E8F5E9; color:var(--primary-green); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${o.status}</span>
+                            ${getStatusBadge(o.status)}
                             <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;" onchange="handleStatusChange('${o.id}', this.value)">
                                 <option value="Menunggu" ${o.status === 'Menunggu' ? 'selected' : ''}>Menunggu</option>
                                 <option value="Dibayar" ${o.status === 'Dibayar' ? 'selected' : ''}>Dibayar</option>
                                 <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                <option value="Dikirim" ${o.status === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
                                 <option value="Terkirim" ${o.status === 'Terkirim' ? 'selected' : ''}>Terkirim</option>
                             </select>
                         </div>
@@ -109,7 +138,7 @@
                         </div>
                         <div>
                             <div style="font-weight:600; font-size:0.85rem; margin-bottom:4px;">Pembayaran</div>
-                            <div style="font-size:0.9rem; color:var(--text-muted);">E-Wallet</div>
+                            <div style="font-size:0.9rem; color:var(--text-muted);">${o.paymentMethod || 'E-Wallet'}</div>
                         </div>
                     </div>
 
@@ -131,16 +160,41 @@
                     </div>
                 </div>
             `).join('');
+
             lucide.createIcons();
-        });
+        }
 
         function handleStatusChange(id, newStatus) {
-            if (updateOrderStatus(id, newStatus)) {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+            let orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            let order = orders.find(o => o.id === id);
+            if (order) {
+                const oldStatus = order.status;
+                order.status = newStatus;
+                localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+                
+                if (typeof showToast === 'function') {
+                    showToast(
+                        `Status transaksi ${id} berhasil diubah dari "${oldStatus}" menjadi "${newStatus}"`,
+                        'success',
+                        'Status Diperbarui'
+                    );
+                }
+
+                updateStats();
+                renderOrders();
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Filter handler
+            document.getElementById('filter-status').addEventListener('change', function() {
+                currentFilter = this.value;
+                renderOrders();
+            });
+
+            updateStats();
+            renderOrders();
+        });
     </script>
 </body>
 </html>

@@ -1101,3 +1101,10 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 @media (max-width: 640px) {
     .grid-4 { grid-template-columns: 1fr; }
 }
+
+.no-anim,
+.no-anim * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+}

@@ -23,20 +23,22 @@
         </div>
     </nav>
     <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
-        <div class="page-header" style="padding-top:0;" data-animate="fade-up">
+        <div class="page-header" style="padding-top:0;">
             <div class="page-title">
                 <h1>Kelola <span class="gradient-text">Transaksi</span></h1>
                 <p>Pantau pesanan yang masuk dan perbarui status pengiriman</p>
             </div>
-            <select class="form-control" style="width:200px; background:white;">
-                <option>Semua Status</option>
-                <option>Menunggu diproses</option>
-                <option>Diproses</option>
-                <option>Terkirim</option>
+            <select class="form-control" style="width:200px; background:white;" id="filter-status">
+                <option value="Semua">Semua Status</option>
+                <option value="Menunggu">Menunggu</option>
+                <option value="Dibayar">Dibayar</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Dikirim">Dikirim</option>
+                <option value="Terkirim">Terkirim</option>
             </select>
         </div>
 
-        <div class="card" data-animate="fade-up" data-delay="100">
+        <div class="card">
             <div class="table-responsive">
                 <table class="table" id="seller-transactions-table">
                     <thead>
@@ -59,42 +61,83 @@
     <script src="../js/store.js"></script>
     <script src="../js/animations.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
-            
+        let currentFilter = 'Semua';
+
+        function getStatusBadge(status) {
+            const colors = {
+                'Menunggu': 'background:#FFF3CD; color:#856404;',
+                'Dibayar': 'background:#D1ECF1; color:#0C5460;',
+                'Diproses': 'background:#CCE5FF; color:#004085;',
+                'Dikirim': 'background:#D4EDDA; color:#155724;',
+                'Terkirim': 'background:#E8F5E9; color:var(--primary-green);'
+            };
+            return `<span style="${colors[status] || 'background:#E8F5E9; color:var(--primary-green);'} padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${status}</span>`;
+        }
+
+        function renderOrders() {
+            const allOrders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            const orders = currentFilter === 'Semua' 
+                ? allOrders 
+                : allOrders.filter(o => o.status === currentFilter);
+
             const tbody = document.querySelector('#seller-transactions-table tbody');
-            if(orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-center">Belum ada pesanan masuk</td></tr>';
-            } else {
-                tbody.innerHTML = orders.map(o => `
-                    <tr>
-                        <td><strong>${o.id}</strong></td>
-                        <td>${new Date(o.date).toLocaleDateString('id-ID')}</td>
-                        <td>${o.items.length} produk</td>
-                        <td>${formatRupiah(o.total)}</td>
-                        <td><span style="background:#E8F5E9; color:var(--primary-green); padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${o.status}</span></td>
-                        <td>
-                            <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;" onchange="updateStatus('${o.id}', this.value)">
-                                <option ${o.status === 'Dibayar' ? 'selected' : ''}>Dibayar</option>
-                                <option ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
-                                <option ${o.status === 'Terkirim' ? 'selected' : ''}>Terkirim</option>
-                            </select>
-                        </td>
-                    </tr>
-                `).join('');
+
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-center">Tidak ada pesanan dengan status "' + currentFilter + '".</td></tr>';
+                return;
             }
+
+            tbody.innerHTML = orders.map(o => `
+                <tr>
+                    <td><strong>${o.id}</strong></td>
+                    <td>${new Date(o.date).toLocaleDateString('id-ID')}</td>
+                    <td>${o.items.length} produk</td>
+                    <td>${formatRupiah(o.total)}</td>
+                    <td>${getStatusBadge(o.status)}</td>
+                    <td>
+                        <select class="form-control" style="width:auto; padding:4px 8px; font-size:0.85rem;" onchange="updateStatus('${o.id}', this.value)">
+                            <option value="Dibayar" ${o.status === 'Dibayar' ? 'selected' : ''}>Dibayar</option>
+                            <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                            <option value="Dikirim" ${o.status === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
+                            <option value="Terkirim" ${o.status === 'Terkirim' ? 'selected' : ''}>Terkirim</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+
             lucide.createIcons();
-        });
+        }
 
         function updateStatus(id, newStatus) {
             let orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
             let order = orders.find(o => o.id === id);
-            if(order) {
+            if (order) {
+                const oldStatus = order.status;
                 order.status = newStatus;
                 localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
-                if (typeof showToast === 'function') showToast('Status pesanan berhasil diperbarui', 'success', 'Diperbarui');
+
+                if (typeof showToast === 'function') {
+                    showToast(
+                        `Status pesanan ${id} diubah dari "${oldStatus}" menjadi "${newStatus}"`,
+                        'success',
+                        'Status Diperbarui'
+                    );
+                }
+
+                renderOrders();
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Filter handler
+            document.getElementById('filter-status').addEventListener('change', function() {
+                currentFilter = this.value;
+                renderOrders();
+            });
+
+            renderOrders();
+            lucide.createIcons();
+        });
     </script>
 </body>
 </html>

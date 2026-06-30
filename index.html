@@ -64,7 +64,6 @@
     <!-- Hero -->
     <section
       class="hero-gradient"
-      data-parallax="0.3"
       style="position: relative; padding-bottom: 80px"
     >
       <div class="container" style="position: relative; z-index: 1">
@@ -103,7 +102,7 @@
     </section>
 
     <!-- Features -->
-    <section style="padding-top: 40px; margin-bottom: 60px">
+    <section style="padding-top: 40px; margin-bottom: 16px">
       <div class="container">
         <div class="grid-4">
           <div class="card" style="text-align: center">
@@ -169,7 +168,7 @@
     </section>
 
     <!-- Dynamic Products -->
-    <section style="padding: 60px 0">
+    <section style="padding: 24px 0 60px">
       <div class="container">
         <div
           style="
@@ -238,7 +237,7 @@
         container.innerHTML = products
           .map(
             (p, i) => `
-        <a href="customer/detail-produk.html?id=${p.id}" class="product-card stagger-item" data-animate="fade-up" data-delay="${i * 80}">
+        <a href="customer/detail-produk.html?id=${p.id}" class="product-card">
             <div style="overflow:hidden;">
                 <img src="${p.image}" class="product-img" alt="${p.name}">
             </div>
@@ -256,10 +255,7 @@
           )
           .join("");
 
-        // Re-run animation init now that the product cards exist in the DOM
-        if (typeof window.reinitAnimations === "function") {
-          window.reinitAnimations();
-        }
+        if (typeof lucide !== "undefined") lucide.createIcons();
       });
     </script>
   </body>
