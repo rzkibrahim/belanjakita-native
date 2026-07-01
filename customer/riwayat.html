@@ -63,7 +63,7 @@
                             <div style="flex:1;">
                                 <h3 style="font-size:1rem; margin-bottom:4px;">${i.name}</h3>
                                 <div style="font-size:0.85rem; color:var(--text-muted);">${i.qty} x ${formatRupiah(i.price)}</div>
-                                <div style="font-size:0.85rem; color:var(--text-muted);"><i data-lucide="store" width="12"></i> ${i.seller || 'UMKM Lokal'}</div>
+                                <div style="font-size:0.85rem; color:var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 4px;"><i data-lucide="store" width="14" height="14"></i> ${i.seller || 'UMKM Lokal'}</div>
                             </div>
                             <div style="font-weight:600;">${formatRupiah(i.price * i.qty)}</div>
                         </div>

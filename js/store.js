@@ -1,5 +1,5 @@
 // LocalStorage Keys
-const KEYS = { PRODUCTS: 'bk_products', CART: 'bk_cart', ORDERS: 'bk_orders', USERS: 'bk_users', ARTICLES: 'bk_articles', ARCHIVED_ARTICLES: 'bk_archived_articles' };
+const KEYS = { PRODUCTS: 'bk_products', CART: 'bk_cart', ORDERS: 'bk_orders', USERS: 'bk_users', ARTICLES: 'bk_articles', ARCHIVED_ARTICLES: 'bk_archived_articles', WISHLIST: 'bk_wishlist', ADDRESSES: 'bk_addresses', PAYMENTS: 'bk_payments' };
 
 // Default Data
 const defaultProducts = [
@@ -303,6 +303,96 @@ function setupImageUpload(inputId, previewId, currentImage) {
             preview.dataset.imageData = base64;
         }
     });
+}
+
+// --- WISHLIST LOGIC ---
+function getWishlist() {
+    if (!localStorage.getItem(KEYS.WISHLIST)) {
+        // Initialize default wishlist with first 4 products
+        const defaultWishlist = [1, 2, 3, 4];
+        localStorage.setItem(KEYS.WISHLIST, JSON.stringify(defaultWishlist));
+    }
+    return JSON.parse(localStorage.getItem(KEYS.WISHLIST)) || [];
+}
+function saveWishlist(wishlist) {
+    localStorage.setItem(KEYS.WISHLIST, JSON.stringify(wishlist));
+}
+function toggleWishlist(productId) {
+    let wishlist = getWishlist();
+    const idx = wishlist.indexOf(parseInt(productId));
+    let added = false;
+    if (idx === -1) {
+        wishlist.push(parseInt(productId));
+        added = true;
+        if (typeof showToast === 'function') showToast('Produk ditambahkan ke wishlist!', 'success', 'Wishlist');
+    } else {
+        wishlist.splice(idx, 1);
+        if (typeof showToast === 'function') showToast('Produk dihapus dari wishlist!', 'info', 'Wishlist');
+    }
+    saveWishlist(wishlist);
+    return added;
+}
+function isInWishlist(productId) {
+    return getWishlist().includes(parseInt(productId));
+}
+
+// --- ADDRESS LOGIC ---
+function getAddresses() {
+    const defaultAddresses = [
+        { id: 1, name: 'Rumah', address: 'Jl. Merdeka No. 123, Jakarta Pusat, DKI Jakarta 10110', isMain: true },
+        { id: 2, name: 'Kantor', address: 'Jl. Sudirman No. 456, Jakarta Selatan, DKI Jakarta 12190', isMain: false }
+    ];
+    if (!localStorage.getItem(KEYS.ADDRESSES)) {
+        localStorage.setItem(KEYS.ADDRESSES, JSON.stringify(defaultAddresses));
+    }
+    return JSON.parse(localStorage.getItem(KEYS.ADDRESSES));
+}
+function saveAddresses(addresses) {
+    localStorage.setItem(KEYS.ADDRESSES, JSON.stringify(addresses));
+}
+function addAddress(name, address, isMain = false) {
+    let addresses = getAddresses();
+    if (isMain) {
+        addresses.forEach(a => a.isMain = false);
+    }
+    const newAddr = {
+        id: Date.now(),
+        name,
+        address,
+        isMain
+    };
+    addresses.push(newAddr);
+    saveAddresses(addresses);
+    if (typeof showToast === 'function') showToast('Alamat baru berhasil ditambahkan!', 'success', 'Alamat');
+    return newAddr;
+}
+
+// --- PAYMENT METHOD LOGIC ---
+function getPaymentMethods() {
+    const defaultPayments = [
+        { id: 1, name: 'BCA Virtual Account', details: '**** 1234', type: 'credit-card' },
+        { id: 2, name: 'GoPay', details: '0812****5678', type: 'smartphone' }
+    ];
+    if (!localStorage.getItem(KEYS.PAYMENTS)) {
+        localStorage.setItem(KEYS.PAYMENTS, JSON.stringify(defaultPayments));
+    }
+    return JSON.parse(localStorage.getItem(KEYS.PAYMENTS));
+}
+function savePaymentMethods(payments) {
+    localStorage.setItem(KEYS.PAYMENTS, JSON.stringify(payments));
+}
+function addPaymentMethod(name, details, type) {
+    let payments = getPaymentMethods();
+    const newPay = {
+        id: Date.now(),
+        name,
+        details,
+        type
+    };
+    payments.push(newPay);
+    savePaymentMethods(payments);
+    if (typeof showToast === 'function') showToast('Metode pembayaran berhasil ditambahkan!', 'success', 'Metode Pembayaran');
+    return newPay;
 }
 
 document.addEventListener('DOMContentLoaded', updateCartBadge);

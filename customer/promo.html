@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo & Voucher - BelanjaKita</title>
+    <meta name="description" content="Temukan penawaran dan voucher belanja menarik di BelanjaKita">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .voucher-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .voucher-card { background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color); display: flex; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); min-height: 160px; }
+        .voucher-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: rgba(168, 85, 247, 0.3); }
+        .voucher-left { width: 120px; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 16px; position: relative; border-right: 2px dashed #f1f5f9; }
+        /* Ticket cut-outs on dash line */
+        .voucher-left::before, .voucher-left::after { content: ''; position: absolute; right: -8px; width: 16px; height: 16px; background: #f8fafc; border-radius: 50%; z-index: 2; }
+        .voucher-left::before { top: -8px; }
+        .voucher-left::after { bottom: -8px; }
+        .voucher-right { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .voucher-code { display: inline-flex; align-items: center; gap: 8px; background: #faf5ff; border: 1px dashed #a855f7; color: #7e22ce; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-family: monospace; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; width: fit-content; }
+        .voucher-code:hover { background: #f3e8ff; }
+    </style>
+</head>
+<body style="background-color: #f8fafc;">
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="nav-brand"><i data-lucide="shopping-bag" color="var(--primary-green)"></i> BelanjaKita</a>
+            <ul class="nav-links">
+                <li><a href="../index.html"><i data-lucide="home" width="18"></i> Beranda</a></li>
+                <li><a href="dashboard-pembeli.html"><i data-lucide="layout-dashboard" width="18"></i> Dashboard</a></li>
+                <li><a href="katalog.html"><i data-lucide="package" width="18"></i> Katalog</a></li>
+                <li><a href="artikel.html"><i data-lucide="file-text" width="18"></i> Artikel</a></li>
+                <li><a href="riwayat.html"><i data-lucide="history" width="18"></i> Riwayat</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="keranjang.html" class="icon-btn"><i data-lucide="shopping-cart" width="20"></i><span class="badge cart-badge-count">0</span></a>
+                <a href="../auth/login.html" class="icon-btn"><i data-lucide="user" width="20"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 32px; padding-bottom: 60px;">
+        <div class="page-header" style="padding: 0 0 24px 0;" data-animate="fade-up">
+            <div class="page-title">
+                <h1>Promo & <span class="gradient-text" style="background: linear-gradient(135deg, #a855f7, #db2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Voucher</span></h1>
+                <p>Klaim voucher dan gunakan kode promo untuk mendapatkan diskon belanja</p>
+            </div>
+        </div>
+
+        <div class="voucher-grid" id="voucher-grid">
+            <!-- Loaded via JS -->
+        </div>
+    </div>
+
+    <script src="../js/store.js"></script>
+    <script src="../js/animations.js"></script>
+    <script>
+        const VOUCHERS = [
+            { id: 1, type: 'Diskon', value: '50%', title: 'Voucher Pengguna Baru', desc: 'Diskon 50% hingga Rp 25.000 untuk pembelian pertama.', code: 'BELANJABARU', exp: '31 Des 2026', color: 'linear-gradient(135deg, #d946ef, #9333ea)' },
+            { id: 2, type: 'Ongkir', value: 'Gratis', title: 'Gratis Ongkir UMKM', desc: 'Tanpa minimum transaksi khusus produk makanan & minuman.', code: 'GRATISONGKIR', exp: '31 Okt 2026', color: 'linear-gradient(135deg, #10b981, #059669)' },
+            { id: 3, type: 'Cashback', value: '10%', title: 'Cashback Belanja Spesial', desc: 'Dapatkan cashback 10% koin BelanjaKita hingga Rp 50.000.', code: 'CASHBACK10', exp: '15 Nov 2026', color: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+            { id: 4, type: 'Diskon', value: '20rb', title: 'Promo Akhir Pekan', desc: 'Potongan langsung Rp 20.000 dengan minimum belanja Rp 100.000.', code: 'WEEKENDSERU', exp: '30 Sep 2026', color: 'linear-gradient(135deg, #f59e0b, #d97706)' }
+        ];
+
+        function loadVouchers() {
+            const grid = document.getElementById('voucher-grid');
+            grid.innerHTML = VOUCHERS.map(v => `
+                <div class="voucher-card">
+                    <div class="voucher-left" style="background: ${v.color};">
+                        <div style="font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">${v.type}</div>
+                        <div style="font-size: 2rem; font-weight: 800; margin: 4px 0;">${v.value}</div>
+                        <div style="font-size: 0.75rem; opacity: 0.8;">S&K Berlaku</div>
+                    </div>
+                    <div class="voucher-right">
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 6px; color:#1e293b;">${v.title}</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">${v.desc}</p>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start; margin-top: auto; padding-top: 8px;">
+                            <div class="voucher-code" onclick="copyCode('${v.code}')" title="Klik untuk salin">
+                                <span>${v.code}</span>
+                                <i data-lucide="copy" width="14" height="14"></i>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); display:flex; align-items:center; gap:4px;">
+                                <i data-lucide="calendar" width="12" height="12"></i> S/d ${v.exp}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                if (typeof showToast === 'function') {
+                    showToast(`Kode promo "${code}" berhasil disalin!`, 'success', 'Voucher');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVouchers();
+        });
+    </script>
+</body>
+</html>
