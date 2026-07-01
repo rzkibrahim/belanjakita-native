@@ -54,6 +54,7 @@
                             <th>ID Pesanan</th>
                             <th>Tanggal</th>
                             <th>Total</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -67,28 +68,82 @@
     <script src="../js/store.js"></script>
     <script src="../js/animations.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function getStatusBadge(status) {
+            const colors = {
+                'Menunggu': 'background:#FFF3CD; color:#856404;',
+                'Dibayar': 'background:#D1ECF1; color:#0C5460;',
+                'Diproses': 'background:#CCE5FF; color:#004085;',
+                'Dikirim': 'background:#D4EDDA; color:#155724;',
+                'Terkirim': 'background:#E8F5E9; color:var(--primary-green);'
+            };
+            return `<span style="${colors[status] || 'background:#E8F5E9; color:var(--primary-green);'} padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;">${status}</span>`;
+        }
+
+        function getNextStatus(status) {
+            const flow = { 'Dibayar': 'Diproses', 'Diproses': 'Dikirim', 'Dikirim': 'Terkirim' };
+            return flow[status] || null;
+        }
+
+        function getActionLabel(status) {
+            const labels = { 'Dibayar': 'Proses', 'Diproses': 'Kirim', 'Dikirim': 'Konfirmasi Terkirim' };
+            return labels[status] || null;
+        }
+
+        function handleAction(id) {
+            const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                const next = getNextStatus(order.status);
+                if (next) {
+                    const oldStatus = order.status;
+                    order.status = next;
+                    localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+                    if (typeof showToast === 'function') {
+                        showToast(`Status pesanan ${id} diubah dari "${oldStatus}" menjadi "${next}"`, 'success', 'Status Diperbarui');
+                    }
+                    renderDashboard();
+                }
+            }
+        }
+
+        function renderDashboard() {
             document.getElementById('stat-prod').innerText = getProducts().length;
             const orders = JSON.parse(localStorage.getItem(KEYS.ORDERS)) || [];
-            document.getElementById('stat-order').innerText = orders.length;
-            
+
+            // Pesanan yang perlu diproses: status Dibayar atau Diproses
+            const pendingOrders = orders.filter(o => o.status === 'Dibayar' || o.status === 'Diproses');
+            document.getElementById('stat-order').innerText = pendingOrders.length;
+
             let totalRev = orders.reduce((sum, o) => sum + o.total, 0);
             document.getElementById('stat-rev').innerText = formatRupiah(totalRev);
-            
+
             const tbody = document.querySelector('#seller-orders-table tbody');
-            if(orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">Belum ada pesanan masuk</td></tr>';
+            // Show orders that still need action (not yet Terkirim)
+            const activeOrders = orders.filter(o => o.status !== 'Terkirim').slice(0, 5);
+
+            if (activeOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-muted text-center">Semua pesanan sudah diproses 🎉</td></tr>';
             } else {
-                tbody.innerHTML = orders.slice(0, 5).map(o => `
+                tbody.innerHTML = activeOrders.map(o => {
+                    const actionLabel = getActionLabel(o.status);
+                    const actionBtn = actionLabel
+                        ? `<button class="btn btn-outline" style="padding:4px 12px; font-size:0.85rem;" onclick="handleAction('${o.id}')">${actionLabel}</button>`
+                        : `<span class="text-muted" style="font-size:0.85rem;">—</span>`;
+                    return `
                     <tr>
                         <td><strong>${o.id}</strong></td>
                         <td>${new Date(o.date).toLocaleDateString('id-ID')}</td>
                         <td>${formatRupiah(o.total)}</td>
-                        <td><button class="btn btn-outline" style="padding:4px 12px; font-size:0.85rem;">Proses</button></td>
-                    </tr>
-                `).join('');
+                        <td>${getStatusBadge(o.status)}</td>
+                        <td>${actionBtn}</td>
+                    </tr>`;
+                }).join('');
             }
             lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDashboard();
         });
     </script>
 </body>
